@@ -11,10 +11,13 @@
 #include "MaxRangeInt.h"
 #include "model.hpp"
 #include "Camera.hpp"
+#include "Ssao.hpp"
+#include "SsaoFbo.hpp"
+#include "Gbuffer.hpp"
+#include "Menu.h"
 
-#define MENU_TIMER_START 1
-#define MENU_TIMER_STOP 2
-#define MENU_EXIT 3
+
+
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
@@ -37,9 +40,12 @@ GLuint bf_render_prog;          // Program to draw a model/a quad with env_map, 
 GLuint tex_render_prog;
 GLuint skybox_prog;          // Program to draw a skybox
 GLuint fbo2screen_prog;      // Program to draw a rbo to screen
+GLuint depth_normal_prog;    // Program that should run before ssao_prog
+GLuint ssao_prog;         // Program to draw ssao
 
 GLuint tex_envmap;           // Skybox's loaded texture
 
+int current_menu = MENU_ALL;
 UniformList uniforms;        // A struct to save the location of uniform variables
 MaxRangeInt* fb2screen_flag; // A flag to tell fb2screen_prog that what texture should be draw to screen.
 ViewportSize viewport_size;  // A struct to save (width, height). This will be used in fbo.reshape(...)
@@ -54,6 +60,10 @@ ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
 Snoobj* s_noobj;             // Draw quad-model to this fbo
 Sb* s_b;                     // Draw skymap+model to this fbo
+
+Ssao ssao_c = Ssao();      // Ssao vao
+Gbuffer* g_buffer;           // Frame buffer object to save depth and normal. This guy is being used to get ssao.
+SsaoFbo* ssao_fbo;           // FBO to save ssao.
 
 void My_Init(){
     /*
@@ -75,6 +85,21 @@ void My_Init(){
     uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");
     uniforms.fbo2screen.is_using_df = glGetUniformLocation(fbo2screen_prog, "is_using_df");
     uniforms.fbo2screen.tex = glGetUniformLocation(fbo2screen_prog, "tex");
+    
+    // Program to draw ssao->depth+normal map
+    depth_normal_prog = createProgram("depth_normal_vertex.vs.glsl", "depth_normal_fragment.fs.glsl", "depth_normal");
+    glUseProgram(fbo2screen_prog);
+    uniforms.depth_normal.mv_matrix = glGetUniformLocation(depth_normal_prog, "mv_matrix");
+    uniforms.depth_normal.proj_matrix = glGetUniformLocation(depth_normal_prog, "proj_matrix");
+    
+    // Program to draw ssao
+    ssao_prog = createProgram("ssao_vertex.vs.glsl", "ssao_fragment.fs.glsl", "ssao program");
+    glUseProgram(ssao_prog);
+    uniforms.ssao.normal_map = glGetUniformLocation(ssao_prog, "normal_map");
+    uniforms.ssao.depth_map = glGetUniformLocation(ssao_prog, "depth_map");
+    uniforms.ssao.proj = glGetUniformLocation(ssao_prog, "proj");
+    uniforms.ssao.noise_map = glGetUniformLocation(ssao_prog, "noise_map");
+    uniforms.ssao.noise_scale = glGetUniformLocation(ssao_prog, "noise_scale");
     
     // Program to draw the depth map
     depth_prog = createProgram("depth_vertex.vs.glsl", "depth_fragment.fs.glsl", "depth");
@@ -128,9 +153,16 @@ void My_Init(){
     s_obj = new Sobj("Sobj:quad+shadow-model");
     s_noobj = new Snoobj("Snoobj:quad-model");
     s_b = new Sb("Sb:model+skybox");
+    g_buffer = new Gbuffer("G buffer for ssao");
+    ssao_fbo = new SsaoFbo("Ssao fbo");
     
     // Flag required by UI
     fb2screen_flag = new MaxRangeInt(4);
+    
+    // Load ssao
+    ssao_c.loadVao(ssao_prog);
+    ssao_c.loadKernalUbo();
+    ssao_c.loadNoiseMap();
     
     // Load Skybox
     cube_map = new CubeMap();
@@ -161,6 +193,8 @@ void My_Init(){
     s_obj->log();
     s_noobj->log();
     s_b->log();
+    g_buffer->log();
+    ssao_fbo->log();
     printUniformList(uniforms);
     printf("My_Init() finished\n");
 }
@@ -273,6 +307,35 @@ void My_Display(){
     
     s_b->afterDrawSkyboxModel();
     
+    // == SSAO == //
+    // depth-normal path
+    g_buffer->beforeDraw();
+    glUseProgram(depth_normal_prog);
+    mesh->draw(uniforms, camera.getView(), camera.getProjection());
+    g_buffer->afterDraw();
+    
+    // SSao
+    ssao_fbo->beforeDraw();
+    glUseProgram(ssao_prog);
+    
+    glm::mat4 proj_matrix = camera.getProjection();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, g_buffer->normal_map);
+    glUniform1i(uniforms.ssao.normal_map, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, g_buffer->depth_map);
+    glUniform1i(uniforms.ssao.depth_map, 1);
+    glUniformMatrix4fv(uniforms.ssao.proj, 1, GL_FALSE, &proj_matrix[0][0]);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, ssao_c.noise_map);
+    glUniform1i(uniforms.ssao.noise_map, 2);
+    glUniform2f(uniforms.ssao.noise_scale, viewport_size.width / 4.0f, viewport_size.height / 4.0f);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, ssao_c.kernal_ubo);
+    
+    glBindVertexArray(ssao_c.ssao_vao);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    ssao_fbo->afterDraw();
+    
     // == FBO to screen == //
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glUseProgram(fbo2screen_prog);
@@ -281,8 +344,9 @@ void My_Display(){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
     
-    switch(fb2screen_flag->get()){
-        case 0:
+    //switch(fb2screen_flag->get()){
+    switch(current_menu){
+        case MENU_ALL:
             // differential rendering
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
@@ -295,25 +359,26 @@ void My_Display(){
             glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
             glUniform1i(uniforms.fbo2screen.is_using_df, 1);
             break;
-        case 1:
+        case MENU_DEPTH_LIGHT:
             // Sobj
             glActiveTexture(GL_TEXTURE4);
             //glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
             glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
+            //glBindTexture(GL_TEXTURE_2D, g_buffer->depth_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
-        case 2:
+        case MENU_DEPTH_EYES:
             // Snoobj
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
+            glBindTexture(GL_TEXTURE_2D, g_buffer->depth_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
-        case 3:
+        case MENU_SSAO:
             // Sb
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
+            glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
@@ -339,6 +404,8 @@ void My_Reshape(int width, int height){
     s_obj->reshape(width, height);
     s_noobj->reshape(width, height);
     s_b->reshape(width, height);
+    g_buffer->reshape(width, height);
+    ssao_fbo->reshape(width, height);
     
     camera.reshape(width, height);
     proj_matrix = camera.getProjection();
@@ -410,20 +477,32 @@ void My_Menu(int id){
     switch (id)
     {
         case MENU_TIMER_START:
-        if (!timer_enabled)
-        {
-            timer_enabled = true;
-            glutTimerFunc(timer_speed, My_Timer, 0);
-        }
-        break;
+            if (!timer_enabled)
+            {
+                timer_enabled = true;
+                glutTimerFunc(timer_speed, My_Timer, 0);
+            }
+            break;
         case MENU_TIMER_STOP:
-        timer_enabled = false;
-        break;
+            timer_enabled = false;
+            break;
         case MENU_EXIT:
-        exit(0);
+            exit(0);
+            break;
+        case MENU_DEPTH_LIGHT:
+            current_menu = MENU_DEPTH_LIGHT;;
+        break;
+        case MENU_DEPTH_EYES:
+            current_menu = MENU_DEPTH_EYES;
+        break;
+        case MENU_SSAO:
+            current_menu = MENU_SSAO;
+        break;
+        case MENU_ALL:
+            current_menu = MENU_ALL;
         break;
         default:
-        break;
+            break;
     }
 }
 int main(int argc, char *argv[]){
@@ -454,6 +533,10 @@ int main(int argc, char *argv[]){
     
     glutSetMenu(menu_main);
     glutAddSubMenu("Timer", menu_timer);
+    glutAddMenuEntry("depth map(light)", MENU_DEPTH_LIGHT);
+    glutAddMenuEntry("depth map(eye)", MENU_DEPTH_EYES);
+    glutAddMenuEntry("ssao", MENU_SSAO);
+    glutAddMenuEntry("all", MENU_ALL);
     glutAddMenuEntry("Exit", MENU_EXIT);
     
     glutSetMenu(menu_timer);

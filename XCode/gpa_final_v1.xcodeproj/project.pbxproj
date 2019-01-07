@@ -83,6 +83,11 @@
 		AAB4D00621E3AC1F00842FDB /* SsaoFbo.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = SsaoFbo.hpp; path = ../Source/SsaoFbo.hpp; sourceTree = "<group>"; };
 		AAB4D00821E3AF9500842FDB /* Ssao.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Ssao.cpp; path = ../Source/Ssao.cpp; sourceTree = "<group>"; };
 		AAB4D00921E3AF9500842FDB /* Ssao.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Ssao.hpp; path = ../Source/Ssao.hpp; sourceTree = "<group>"; };
+		AAB4D01C21E3C19A00842FDB /* ssao_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ssao_fragment.fs.glsl; path = ../Assets/ssao_fragment.fs.glsl; sourceTree = "<group>"; };
+		AAB4D01D21E3C19A00842FDB /* depth_normal_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_normal_vertex.vs.glsl; path = ../Assets/depth_normal_vertex.vs.glsl; sourceTree = "<group>"; };
+		AAB4D01E21E3C19A00842FDB /* depth_normal_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_normal_fragment.fs.glsl; path = ../Assets/depth_normal_fragment.fs.glsl; sourceTree = "<group>"; };
+		AAB4D01F21E3C19B00842FDB /* ssao_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ssao_vertex.vs.glsl; path = ../Assets/ssao_vertex.vs.glsl; sourceTree = "<group>"; };
+		AAB4D02621E3CFF700842FDB /* Menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = ../Source/Menu.h; sourceTree = "<group>"; };
 		AABAE57921D5A3C4006F7199 /* df_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_fragment.fs.glsl; path = ../Assets/df_fragment.fs.glsl; sourceTree = "<group>"; };
 		AABAE57A21D5A3C4006F7199 /* df_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_vertex.vs.glsl; path = ../Assets/df_vertex.vs.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -148,6 +153,7 @@
 		AA66F58821D3C8BC00E901CE /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				AAB4D02621E3CFF700842FDB /* Menu.h */,
 				AA001CB621E2C7BD00155D0C /* vertexData.h */,
 				AA001CB521E2C24900155D0C /* textureData.h */,
 				AA0023CA21D67F5A00F2FE83 /* MaxRangeInt.h */,
@@ -180,6 +186,10 @@
 		AABAE57B21D5A3EF006F7199 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				AAB4D01E21E3C19A00842FDB /* depth_normal_fragment.fs.glsl */,
+				AAB4D01D21E3C19A00842FDB /* depth_normal_vertex.vs.glsl */,
+				AAB4D01C21E3C19A00842FDB /* ssao_fragment.fs.glsl */,
+				AAB4D01F21E3C19B00842FDB /* ssao_vertex.vs.glsl */,
 				AA13D3C921CA2B40009AC6C0 /* depth_fragment.fs.glsl */,
 				AA13D3C821CA2B3F009AC6C0 /* depth_vertex.vs.glsl */,
 				AA3B8BB521C4DC5800DEEDEA /* skybox_fragment.fs.glsl */,

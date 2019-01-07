@@ -63,6 +63,23 @@ void Mesh::draw(UniformList uniform_list,
     
     glUniform1i(uniform_list.render.is_quad, 0);
 }
+// ssao
+void Mesh::draw(UniformList uniform_list,
+          glm::mat4 view_matrix,
+          glm::mat4 proj_matrix,
+          glm::vec3 position,
+          glm::quat quaternion,
+          glm::vec3 scale){
+    
+    glm::mat4 model = getModelMatrix(position, quaternion, scale);
+    glm::mat4 mv_matrix = view_matrix * model;
+    
+    glUniformMatrix4fv(uniform_list.depth_normal.mv_matrix, 1, GL_FALSE, &mv_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.depth_normal.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+    
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
 // Build vao , glVertexAttributePointer
 void Mesh::setMesh(){
     glGenVertexArrays(1, &VAO);

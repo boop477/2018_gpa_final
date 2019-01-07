@@ -133,4 +133,8 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/anim.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/metadata.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/postprocess.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/Camera.hpp
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Camera.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Ssao.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/SsaoFbo.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Gbuffer.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Menu.h

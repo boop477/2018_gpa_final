@@ -39,16 +39,6 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
     
 	std::cout << "Model.cpp: Parsing done, release scene" << std::endl;
 }
-
-/*void Model::draw(GLuint program,
-                 glm::mat4 view,
-                 glm::mat4 projection){
-	
-    for(int i = 0; i < _meshes.size(); i++){
-	//for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(program, _position, _quaternion, _scale, view, projection);
-    }
-}*/
 void Model::draw(UniformList uniform_list,
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
@@ -70,7 +60,6 @@ void Model::draw(UniformList uniform_list,
                         _scale);
     }
 }
-
 void Model::draw(UniformList uniform_list,
                glm::mat4 light_vp_matrix){
     /*
@@ -86,26 +75,20 @@ void Model::draw(UniformList uniform_list,
                         _scale);
     }
 }
-
-/*
-void Model::draw(GLuint program,
-				glm::mat4 view,
-				glm::mat4 projection,
-				glm::vec3 axis,
-				float theta) {
-	glUseProgram(program);
-	glm::mat4 model = getModelMatrix(_position, _quaternion, _scale);
-	glm::vec3 end = glm::vec3(glm::inverse(view*model)*
-		glm::vec4(axis, 1));
-	glm::vec3 start = glm::vec3(glm::inverse(view*model)*
-		glm::vec4(0.0,0.0,0.0, 1.0));
-	glm::quat q = glm::angleAxis(glm::radians(theta), end - start);
-	addQuaternion(q);
-
-	for (int i = 0; i < _meshes.size(); i++) {
-		_meshes[i].draw(program, _position, _quaternion, _scale, view, projection);
-	}
-}*/
+void Model::draw(UniformList uniform_list,
+          glm::mat4 view_matrix,
+          glm::mat4 proj_matrix){
+    // Draw ssao(depth-normal map)
+    for(int i = 0; i < _meshes.size(); i++){
+        //for (int i = 0; i < 1; i++) {
+        _meshes[i].draw(uniform_list,
+                        view_matrix,
+                        proj_matrix,
+                        _position,
+                        _quaternion,
+                        _scale);
+    }
+}
 
 void Model::parseTree(aiNode* node, const aiScene* scene){
     // Parse meshes of this node

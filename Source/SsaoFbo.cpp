@@ -51,6 +51,7 @@ void SsaoFbo::afterDraw(){
      *  2. Bind to default framebuffer
      */
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glEnable(GL_DEPTH_TEST);
 }
 void SsaoFbo::log(){
     printf("= = = = = =\n");

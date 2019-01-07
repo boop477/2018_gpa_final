@@ -34,6 +34,9 @@ public:
                 bool is_shadow);
     void draw(UniformList uniform_list,
               glm::mat4 light_vp_matrix);
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix);
 	void log();
 
 	void addPosition(glm::vec3 position);

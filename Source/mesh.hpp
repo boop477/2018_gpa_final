@@ -53,6 +53,12 @@ public:
                 glm::vec3 position,
                 glm::quat quaternion,
               glm::vec3 scale);
+    void draw(UniformList uniform_list, // ssao
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix,
+              glm::vec3 position,
+              glm::quat quaternion,
+              glm::vec3 scale);
 
 	void log();
 	void logTexId();
