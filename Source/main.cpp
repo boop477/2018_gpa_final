@@ -33,7 +33,8 @@ using namespace glm;
 using namespace std;
 
 GLuint depth_prog;           // Program to get a depth map
-GLuint render_prog;          // Program to draw a model/a quad with env_map, shadow ahd BF lighting
+GLuint bf_render_prog;          // Program to draw a model/a quad with env_map, shadow ahd BF lighting
+GLuint tex_render_prog;
 GLuint skybox_prog;          // Program to draw a skybox
 GLuint fbo2screen_prog;      // Program to draw a rbo to screen
 
@@ -86,19 +87,40 @@ void My_Init(){
     uniforms.skybox.inv_vp_matrix = glGetUniformLocation(skybox_prog, "inv_vp_matrix");
     uniforms.skybox.tex_cubemap = glGetUniformLocation(skybox_prog, "tex_cubemap");
     
-    // Program to draw the model
-    render_prog = createProgram("vertex.vs.glsl", "fragment.fs.glsl", "render");
-    glUseProgram(render_prog);
+    // Program to draw the model with diffuse map
+    tex_render_prog = createProgram("tex_vertex.vs.glsl", "tex_fragment.fs.glsl", "tex_render");
+    glUseProgram(tex_render_prog);
     
-    uniforms.render.mv_matrix = glGetUniformLocation(render_prog, "mv_matrix");
-    uniforms.render.model_matrix = glGetUniformLocation(render_prog, "model_matrix");
-    uniforms.render.view_matrix = glGetUniformLocation(render_prog, "view_matrix");
-    uniforms.render.proj_matrix = glGetUniformLocation(render_prog, "proj_matrix");
-    uniforms.render.is_quad = glGetUniformLocation(render_prog, "is_quad");
-    uniforms.render.light_mvp_matrix = glGetUniformLocation(render_prog, "light_mvp_matrix");
-    uniforms.render.tex_cubemap = glGetUniformLocation(render_prog, "tex_cubemap");
-    uniforms.render.tex_shadow = glGetUniformLocation(render_prog, "tex_shadow");
-    uniforms.render.is_shadow = glGetUniformLocation(render_prog, "is_shadow");
+    /*uniforms.tex_render.mv_matrix = glGetUniformLocation(tex_render_prog, "mv_matrix");
+    uniforms.tex_render.model_matrix = glGetUniformLocation(tex_render_prog, "model_matrix");
+    uniforms.tex_render.view_matrix = glGetUniformLocation(tex_render_prog, "view_matrix");
+    uniforms.tex_render.proj_matrix = glGetUniformLocation(tex_render_prog, "proj_matrix");
+    uniforms.tex_render.is_quad = glGetUniformLocation(tex_render_prog, "is_quad");
+    uniforms.tex_render.light_mvp_matrix = glGetUniformLocation(tex_render_prog, "light_mvp_matrix");
+    uniforms.tex_render.tex_cubemap = glGetUniformLocation(tex_render_prog, "tex_cubemap");
+    uniforms.tex_render.tex_shadow = glGetUniformLocation(tex_render_prog, "tex_shadow");
+    uniforms.tex_render.is_shadow = glGetUniformLocation(tex_render_prog, "is_shadow");
+    uniforms.tex_render.tex = glGetUniformLocation(tex_render_prog, "tex");*/
+    uniforms.tex_render.model_matrix = glGetUniformLocation(tex_render_prog, "model_matrix");
+    uniforms.tex_render.view_matrix = glGetUniformLocation(tex_render_prog, "view_matrix");
+    uniforms.tex_render.proj_matrix = glGetUniformLocation(tex_render_prog, "proj_matrix");
+    uniforms.tex_render.tex = glGetUniformLocation(tex_render_prog, "tex");
+    
+    // Program to draw the model with metal texture + BF shading
+    bf_render_prog = createProgram("bf_vertex.vs.glsl", "bf_fragment.fs.glsl", "bf_render");
+    glUseProgram(bf_render_prog);
+    
+    
+    uniforms.render.mv_matrix = glGetUniformLocation(bf_render_prog, "mv_matrix");
+    uniforms.render.model_matrix = glGetUniformLocation(bf_render_prog, "model_matrix");
+    uniforms.render.view_matrix = glGetUniformLocation(bf_render_prog, "view_matrix");
+    uniforms.render.proj_matrix = glGetUniformLocation(bf_render_prog, "proj_matrix");
+    uniforms.render.is_quad = glGetUniformLocation(bf_render_prog, "is_quad");
+    uniforms.render.light_mvp_matrix = glGetUniformLocation(bf_render_prog, "light_mvp_matrix");
+    uniforms.render.tex_cubemap = glGetUniformLocation(bf_render_prog, "tex_cubemap");
+    uniforms.render.tex_shadow = glGetUniformLocation(bf_render_prog, "tex_shadow");
+    uniforms.render.is_shadow = glGetUniformLocation(bf_render_prog, "is_shadow");
+    uniforms.render.tex = glGetUniformLocation(bf_render_prog, "tex");
     
     // Fbos
     shadow_fbo = new ShadowFbo("Shadow buffer");
@@ -126,6 +148,7 @@ void My_Init(){
                     glm::quat(vec3(0.0, 0.0, 0.0)));
     
     mesh = new Model("lost_empire/lost_empire.obj", "lost_empire/",
+    //mesh = new Model("vokselia_spawn/vokselia_spawn.obj", "vokselia_spawn/",
                       glm::vec3(0.0, 0.0, 0.0),
                       glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                       glm::vec3(0.15, 0.15, 0.15));
@@ -155,8 +178,9 @@ void My_Display(){
     mat4 scale_bias_matrix = translate(mat4(), vec3(0.5f, 0.5f, 0.5f)) * scale(mat4(), vec3(0.5f, 0.5f, 0.5f));
     
     // == View and projection matrix for light space == //
-    mat4 light_proj_matrix = ortho(-shadow_range, shadow_range, -shadow_range, shadow_range, 0.0f, 170.0f); // far plane must be far enough.
-    mat4 light_view_matrix = lookAt(vec3(-31.75, 26.05, -97.72), vec3(-20.0f, -23.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    mat4 light_proj_matrix = ortho(-shadow_range, shadow_range, -shadow_range, shadow_range, 0.0f, 70.0f); // far plane must be far enough.
+    //mat4 light_view_matrix = lookAt(vec3(-31.75, 26.05, -97.72), vec3(-20.0f, -23.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    mat4 light_view_matrix = lookAt(vec3(5.00, 5.00, 5.00), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     mat4 light_vp_matrix = light_proj_matrix * light_view_matrix;
     mat4 shadow_sbpv_matrix = scale_bias_matrix * light_vp_matrix;
     
@@ -174,7 +198,7 @@ void My_Display(){
     shadow_fbo->afterDraw();
     
     // == Get the stencil map == //
-    glUseProgram(render_prog);
+    glUseProgram(bf_render_prog);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     
     // Bind textures
@@ -216,7 +240,8 @@ void My_Display(){
     cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
     
     // - Draw the model - //
-    glUseProgram(render_prog);
+    
+    glUseProgram(bf_render_prog);
     
     // Bind textures
     glActiveTexture(GL_TEXTURE1);
@@ -227,8 +252,23 @@ void My_Display(){
     glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
     glUniform1i(uniforms.render.tex_cubemap, 2);
     
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
+    glUniform1i(uniforms.render.tex, 3);
+    
+    /*glUseProgram(tex_render_prog);
+    
+    // Bind textures
+    //glActiveTexture(GL_TEXTURE1);
+    //glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
+    //glUniform1i(uniforms.tex_render.tex_shadow, 1);
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
+    glUniform1i(uniforms.tex_render.tex, 2);*/
+    
     // draw mesh
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
     
     s_b->afterDrawSkyboxModel();
     
@@ -257,7 +297,8 @@ void My_Display(){
         case 1:
             // Sobj
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
+            //glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
+            glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;

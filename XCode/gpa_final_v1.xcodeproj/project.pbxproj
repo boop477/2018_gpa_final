@@ -37,8 +37,8 @@
 
 /* Begin PBXFileReference section */
 		4D28D4AB1CE8AEE0006CC5D4 /* 103033241_AS4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 103033241_AS4; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D28D4B51CE8AF3E006CC5D4 /* fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fragment.fs.glsl; path = ../Assets/fragment.fs.glsl; sourceTree = "<group>"; };
-		4D28D4B61CE8AF3E006CC5D4 /* vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vertex.vs.glsl; path = ../Assets/vertex.vs.glsl; sourceTree = "<group>"; };
+		4D28D4B51CE8AF3E006CC5D4 /* bf_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bf_fragment.fs.glsl; path = ../Assets/bf_fragment.fs.glsl; sourceTree = "<group>"; };
+		4D28D4B61CE8AF3E006CC5D4 /* bf_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bf_vertex.vs.glsl; path = ../Assets/bf_vertex.vs.glsl; sourceTree = "<group>"; };
 		4D28D4B71CE8AF45006CC5D4 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../Source/main.cpp; sourceTree = "<group>"; };
 		4D28D4B91CE8B00B006CC5D4 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		4D28D4BA1CE8B00B006CC5D4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -52,6 +52,8 @@
 		AA001CAC21E25E3400155D0C /* mesh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mesh.hpp; path = ../Source/mesh.hpp; sourceTree = "<group>"; };
 		AA001CB521E2C24900155D0C /* textureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = textureData.h; path = ../Source/textureData.h; sourceTree = "<group>"; };
 		AA001CB621E2C7BD00155D0C /* vertexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vertexData.h; path = ../Source/vertexData.h; sourceTree = "<group>"; };
+		AA001CB721E2D3CD00155D0C /* tex_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_fragment.fs.glsl; path = ../Assets/tex_fragment.fs.glsl; sourceTree = "<group>"; };
+		AA001CB821E2D3CD00155D0C /* tex_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_vertex.vs.glsl; path = ../Assets/tex_vertex.vs.glsl; sourceTree = "<group>"; };
 		AA0023CA21D67F5A00F2FE83 /* MaxRangeInt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MaxRangeInt.h; path = ../Source/MaxRangeInt.h; sourceTree = "<group>"; };
 		AA10DC0A21C8DDD400D17F23 /* Helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Helper.h; path = ../Source/Helper.h; sourceTree = "<group>"; };
 		AA10DC0E21C8F36700D17F23 /* NotImplementedError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NotImplementedError.h; path = ../Source/NotImplementedError.h; sourceTree = "<group>"; };
@@ -94,13 +96,13 @@
 		4D28D4A21CE8AEE0006CC5D4 = {
 			isa = PBXGroup;
 			children = (
-				AA001CA821E25D7200155D0C /* Camera.cpp */,
-				AA001CA521E25D7100155D0C /* Camera.hpp */,
 				AA7B547D21D694240041A6B5 /* Fbos */,
 				AABAE57B21D5A3EF006F7199 /* Shaders */,
 				AA66F58821D3C8BC00E901CE /* Helpers */,
 				AA52E37E21C9689000D48AAF /* Quad.cpp */,
 				AA52E37F21C9689000D48AAF /* Quad.hpp */,
+				AA001CA821E25D7200155D0C /* Camera.cpp */,
+				AA001CA521E25D7100155D0C /* Camera.hpp */,
 				AA52E37B21C959B400D48AAF /* CubeMap.cpp */,
 				AA52E37C21C959B400D48AAF /* CubeMap.hpp */,
 				AA001CAB21E25E3400155D0C /* mesh.cpp */,
@@ -169,8 +171,10 @@
 				AA3B8BB621C4DC5800DEEDEA /* skybox_vertex.vs.glsl */,
 				AABAE57921D5A3C4006F7199 /* df_fragment.fs.glsl */,
 				AABAE57A21D5A3C4006F7199 /* df_vertex.vs.glsl */,
-				4D28D4B51CE8AF3E006CC5D4 /* fragment.fs.glsl */,
-				4D28D4B61CE8AF3E006CC5D4 /* vertex.vs.glsl */,
+				4D28D4B51CE8AF3E006CC5D4 /* bf_fragment.fs.glsl */,
+				4D28D4B61CE8AF3E006CC5D4 /* bf_vertex.vs.glsl */,
+				AA001CB721E2D3CD00155D0C /* tex_fragment.fs.glsl */,
+				AA001CB821E2D3CD00155D0C /* tex_vertex.vs.glsl */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
@@ -209,7 +213,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4D28D4A61CE8AEE0006CC5D4 /* Build configuration list for PBXProject "gpa_final" */;
+			buildConfigurationList = 4D28D4A61CE8AEE0006CC5D4 /* Build configuration list for PBXProject "gpa_final_v1" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -353,7 +357,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4D28D4A61CE8AEE0006CC5D4 /* Build configuration list for PBXProject "gpa_final" */ = {
+		4D28D4A61CE8AEE0006CC5D4 /* Build configuration list for PBXProject "gpa_final_v1" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4D28D4B01CE8AEE0006CC5D4 /* Debug */,

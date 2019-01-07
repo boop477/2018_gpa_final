@@ -16,13 +16,18 @@ uniform mat4 mv_matrix;
 uniform mat4 light_mvp_matrix;
 uniform vec3 light_pos = vec3(-31.75, 26.05, -97.72); // light position in WORLD SPACE!
 
-layout (location = 0) in vec4 position;
-layout (location = 1) in vec3 normal;
+/*layout (location = 0) in vec4 position;
+layout (location = 1) in vec3 normal;*/
+
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec2 tex_cord;
+layout(location = 2) in vec3 normal;
 
 out VS_OUT
 {
     vec3 normal;
     vec3 view;
+    vec2 tex_cord;
     
     vec3 N;         // normal in camera space
     vec3 L;         // light vector in camera space
@@ -34,6 +39,9 @@ out VS_OUT
 void main(void)
 {
     mat4 _mv_matrix = view_matrix * model_matrix;
+    
+    // Texture
+    vs_out.tex_cord = tex_cord;
     
     // Shadow
     vs_out.shadow_coord = light_mvp_matrix * position;

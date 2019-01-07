@@ -8,6 +8,7 @@
  *                 when drawing Snoobj.
  */
 #version 410 core
+uniform sampler2D tex;
 uniform samplerCube tex_cubemap;
 uniform sampler2DShadow tex_shadow;
 uniform int is_quad;
@@ -17,6 +18,7 @@ in VS_OUT
 {
     vec3 normal;
     vec3 view;
+    vec2 tex_cord;
     
     vec3 N;         // normal in view space
     vec3 L;         // light vector in view space
@@ -29,6 +31,7 @@ out vec4 frag_color;
 
 void main(void)
 {
+    vec3 texColor = texture(tex,fs_in.tex_cord).rgb;
     vec3 shadow_color = vec3(0.41, 0.36, 0.37);
     vec3 quad_color = vec3(0.64, 0.57, 0.49);
     // Shadow factor
@@ -51,11 +54,20 @@ void main(void)
     vec4 env_color = texture(tex_cubemap, r);// * vec4(0.95, 0.80, 0.45, 1.0);
     
     // Drawing a model
-    if(is_shadow == 1)
-        frag_color = (bf_color*0.65+env_color*0.35)*shadow_factor;
-    else{
-        frag_color = bf_color*0.65+env_color*0.35;
+    if(is_shadow == 1){
+        frag_color = vec4(texColor, 1.0)*shadow_factor;
+        if (shadow_factor >= 0.5){
+            frag_color = vec4(texColor, 1.0); // No shadow
+        }
+        else{
+            frag_color = vec4(texColor, 1.0)*vec4(0.5); // Add shadow
+        }
     }
+    else{
+        frag_color = vec4(texColor, 1.0);
+    }
+    //frag_color = vec4(1.0, 1.0, 1.0, 1.0);
+    //frag_color = vec4(texColor, 1.0);
     
     // drawing a quad
     if (is_quad == 1){

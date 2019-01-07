@@ -30,6 +30,13 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
 	// parse the tree
     parseTree(scene->mRootNode, scene);
 	aiReleaseImport(scene);
+    
+    //tex_ID = this->getTextureID("vokselia_spawn/vokselia_spawn.png"); // 2nd
+    tex_ID = this->getTextureID("lost_empire/lost_empire-RGBA.png"); // 2nd
+    if (tex_ID == GLuint(99)) {
+        printf("My_Display::texture not found\n");
+    }
+    
 	std::cout << "Model.cpp: Parsing done, release scene" << std::endl;
 }
 
