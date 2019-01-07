@@ -54,11 +54,16 @@ void main(void)
     vec4 env_color = texture(tex_cubemap, r);// * vec4(0.95, 0.80, 0.45, 1.0);
     
     // Drawing a model
-    if(is_shadow == 1)
-        //frag_color = (bf_color*0.65+env_color*0.35)*shadow_factor;
+    if(is_shadow == 1){
         frag_color = vec4(texColor, 1.0)*shadow_factor;
+        if (shadow_factor >= 0.5){
+            frag_color = vec4(texColor, 1.0); // No shadow
+        }
+        else{
+            frag_color = vec4(texColor, 1.0)*vec4(0.5); // Add shadow
+        }
+    }
     else{
-        //frag_color = bf_color*0.65+env_color*0.35;
         frag_color = vec4(texColor, 1.0);
     }
     //frag_color = vec4(1.0, 1.0, 1.0, 1.0);
