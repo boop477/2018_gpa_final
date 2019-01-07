@@ -74,6 +74,7 @@ void My_Init(){
     uniforms.fbo2screen.tex_snoobj = glGetUniformLocation(fbo2screen_prog, "tex_snoobj");
     uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");
     uniforms.fbo2screen.is_using_df = glGetUniformLocation(fbo2screen_prog, "is_using_df");
+    uniforms.fbo2screen.tex = glGetUniformLocation(fbo2screen_prog, "tex");
     
     // Program to draw the depth map
     depth_prog = createProgram("depth_vertex.vs.glsl", "depth_fragment.fs.glsl", "depth");
