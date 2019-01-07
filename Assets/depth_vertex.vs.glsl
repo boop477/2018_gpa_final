@@ -1,0 +1,13 @@
+/*
+ * Vertex shader to draw a depth map
+ */
+#version 410 core
+
+uniform mat4 mvp;
+
+layout (location = 0) in vec4 position;
+
+void main(void)
+{
+    gl_Position = mvp * position;
+}
