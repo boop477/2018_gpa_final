@@ -39,6 +39,7 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
     
 	std::cout << "Model.cpp: Parsing done, release scene" << std::endl;
 }
+// Diffuse map + texture
 void Model::draw(UniformList uniform_list,
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
@@ -48,45 +49,58 @@ void Model::draw(UniformList uniform_list,
      * Should invoke glUseProgram before calling this function.
      * Use this function to draw a model with environment mapping, shadow and BF lighting.
      */
+    glm::mat4 model = getModelMatrix();
+    glm::mat4 light_mvp_matrix = light_vp_matrix * model;
+    glUniformMatrix4fv(uniform_list.render.model_matrix, 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(uniform_list.render.view_matrix, 1, GL_FALSE, &view_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.render.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.render.light_mvp_matrix, 1, GL_FALSE, &light_mvp_matrix[0][0]);
+    //glUniform1i(uniform_list.render.is_quad, 0);
+    if(is_shadow){
+        glUniform1i(uniform_list.render.is_shadow, 1);
+    }
+    else{
+        glUniform1i(uniform_list.render.is_shadow, 0);
+    }
+    
     for(int i = 0; i < _meshes.size(); i++){
         //for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(uniform_list,
-                        view_matrix,
-                        proj_matrix,
-                        light_vp_matrix,
-                        is_shadow,
-                        _position,
-                        _quaternion,
-                        _scale);
+        _meshes[i].draw();
     }
+    
+    glUniform1i(uniform_list.render.is_quad, 0);
 }
+// For shadow map from light view
 void Model::draw(UniformList uniform_list,
                glm::mat4 light_vp_matrix){
     /*
      * Should invoke glUseProgram before calling this function.
-     * Invoke this function to get a depth map.
+     * Invoke this function to get a depth map from light.
      */
+    glm::mat4 model = getModelMatrix();   // Assign uniforms
+    glUniformMatrix4fv(uniform_list.depth.mvp, 1, GL_FALSE, value_ptr(light_vp_matrix * model));
+    
     for(int i = 0; i < _meshes.size(); i++){
-        //for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(uniform_list,
-                        light_vp_matrix,
-                        _position,
-                        _quaternion,
-                        _scale);
+        _meshes[i].draw();
     }
 }
+// For ssao
 void Model::draw(UniformList uniform_list,
-          glm::mat4 view_matrix,
-          glm::mat4 proj_matrix){
-    // Draw ssao(depth-normal map)
+                 glm::mat4 view_matrix,
+                 glm::mat4 proj_matrix){
+    /*
+     * Should invoke glUseProgram before calling this function.
+     * Invoke this function to get a depth map and a normal map.
+     * Those maps will be used to get a ssao map.
+     */
+    glm::mat4 model = getModelMatrix();
+    glm::mat4 mv_matrix = view_matrix * model;
+    
+    glUniformMatrix4fv(uniform_list.depth_normal.mv_matrix, 1, GL_FALSE, &mv_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.depth_normal.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+    
     for(int i = 0; i < _meshes.size(); i++){
-        //for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(uniform_list,
-                        view_matrix,
-                        proj_matrix,
-                        _position,
-                        _quaternion,
-                        _scale);
+        _meshes[i].draw();
     }
 }
 
@@ -260,13 +274,13 @@ GLuint Model::getTextureID(std::string path) {
 	}
 }
 
-glm::mat4 Model::getModelMatrix(glm::vec3 position, glm::quat quaternion, glm::vec3 scale) {
+glm::mat4 Model::getModelMatrix() {
 	// Translation matrix
-	glm::mat4 translation_matrix = glm::translate(glm::mat4(), position);
+	glm::mat4 translation_matrix = glm::translate(glm::mat4(), _position);
 	// Rotation matrix
-	glm::mat4 rotation_matrix = glm::toMat4(quaternion);
+	glm::mat4 rotation_matrix = glm::toMat4(_quaternion);
 	// Scale matrix
-	glm::mat4 scale_matrix = glm::scale(scale);
+	glm::mat4 scale_matrix = glm::scale(_scale);
 
 	return translation_matrix * rotation_matrix * scale_matrix;
 }

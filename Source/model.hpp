@@ -34,6 +34,7 @@ public:
                 bool is_shadow);
     void draw(UniformList uniform_list,
               glm::mat4 light_vp_matrix);
+    // For ssao
     void draw(UniformList uniform_list,
               glm::mat4 view_matrix,
               glm::mat4 proj_matrix);
@@ -60,7 +61,7 @@ private:
     
     void parseTree(aiNode* node, const aiScene* scene);
     Mesh parseMesh(aiMesh* mesh_data, const aiScene* scenes);
-	glm::mat4 getModelMatrix(glm::vec3 position, glm::quat quaternion, glm::vec3 scale);
+	glm::mat4 getModelMatrix();
 };
 
 #endif /* model_hpp */
