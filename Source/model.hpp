@@ -43,6 +43,8 @@ public:
 	void addScale(glm::vec3 scale);
 	void setScale(glm::vec3 scale);
 	GLuint getTextureID(std::string path);
+    
+    GLuint tex_ID;
 private:
 	std::string _prefix;
     std::vector<Mesh> _meshes;

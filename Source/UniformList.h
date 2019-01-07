@@ -30,7 +30,27 @@ struct UniformList
         
         GLint tex_cubemap;
         GLint tex_shadow;
+        GLint tex;
     } render;
+    struct
+    {
+        /*
+        GLint mv_matrix;
+        GLint model_matrix;
+        GLint view_matrix;
+        GLint proj_matrix;
+        GLint light_mvp_matrix;
+        
+        GLint is_quad;
+        GLint is_shadow;
+        GLint tex;
+        GLint tex_cubemap;
+        GLint tex_shadow;*/
+        GLint model_matrix;
+        GLint view_matrix;
+        GLint proj_matrix;
+        GLint tex;
+    } tex_render;
     struct
     {
         GLint view_matrix;
