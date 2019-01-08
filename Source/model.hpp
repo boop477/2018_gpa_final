@@ -12,6 +12,7 @@
 
 #include "mesh.hpp"
 #include "UniformList.h"
+#include "BfshadingEffect.h"
 
 #include "../Include/GLM/glm/glm.hpp"
 #include "../Include/GLM/glm/gtx/transform.hpp"
@@ -29,7 +30,7 @@ public:
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
                 glm::mat4 light_vp_matrix,
-                bool is_shadow);
+                BfShadingEffect bfshading_effect);
     void draw(UniformList uniform_list,
               glm::mat4 light_vp_matrix);
     // For ssao
@@ -47,6 +48,7 @@ public:
 	GLuint getTextureID(std::string path);
     
     GLuint tex_ID;
+    GLuint tex_normal_ID;
 private:
 	std::string _prefix;
     std::vector<Mesh> _meshes;

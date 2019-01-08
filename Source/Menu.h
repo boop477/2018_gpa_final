@@ -16,5 +16,9 @@
 #define MENU_DEPTH_EYES 5
 #define MENU_SSAO 6
 #define MENU_ALL 7
+#define MENU_NORMAL_MAP_ON 8
+#define MENU_NORMAL_MAP_OFF 9
+#define MENU_SHADOW_ON 10
+#define MENU_SHADOW_OFF 11
 
 #endif /* Menu_h */

@@ -12,12 +12,7 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
     this->_scale = scale;
 	this->_prefix = prefix;
 
-	//TCHAR pwd[256];
-	//GetCurrentDirectory(256, pwd);
-	//MessageBox(NULL, pwd, pwd, 0);
-
     // Use assimp to read scene
-    //Assimp::Importer importer;
 	const aiScene* scene = aiImportFile(filename.c_str(), aiProcessPreset_TargetRealtime_Fast);
 	if (scene == nullptr) {
 		//std::cout << importer.GetErrorString() << std::endl;
@@ -26,7 +21,7 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
 	else {
 		std::cout << "Model.cpp: Read scene" << std::endl;
 	}
-	//const aiScene* scene = aiImportFile(filename.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+    
 	// parse the tree
     parseTree(scene->mRootNode, scene);
 	aiReleaseImport(scene);
@@ -37,6 +32,22 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
         printf("My_Display::texture not found\n");
     }
     
+    // == Manually load the normal map
+    GLuint textureID;
+    texture_data tdata = load_png("lost_empire/lost_empire_normal.png");
+    
+    //GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tdata.width, tdata.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tdata.data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Save texture ID of normal map
+    tex_normal_ID = textureID;
+    
 	std::cout << "Model.cpp: Parsing done, release scene" << std::endl;
 }
 // Diffuse map + texture
@@ -44,7 +55,7 @@ void Model::draw(UniformList uniform_list,
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
                 glm::mat4 light_vp_matrix,
-                bool is_shadow){
+                BfShadingEffect bfshading_effect){
     /*
      * Should invoke glUseProgram before calling this function.
      * Use this function to draw a model with environment mapping, shadow and BF lighting.
@@ -55,13 +66,16 @@ void Model::draw(UniformList uniform_list,
     glUniformMatrix4fv(uniform_list.render.view_matrix, 1, GL_FALSE, &view_matrix[0][0]);
     glUniformMatrix4fv(uniform_list.render.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
     glUniformMatrix4fv(uniform_list.render.light_mvp_matrix, 1, GL_FALSE, &light_mvp_matrix[0][0]);
+    glUniform1i(uniform_list.render.is_shadow, bfshading_effect.shadow);
+    glUniform1i(uniform_list.render.is_normal_map, bfshading_effect.normal_map);
+    glUniform1i(uniform_list.render.is_ssao, bfshading_effect.ssao);
     //glUniform1i(uniform_list.render.is_quad, 0);
-    if(is_shadow){
+    /*if(is_shadow){
         glUniform1i(uniform_list.render.is_shadow, 1);
     }
     else{
         glUniform1i(uniform_list.render.is_shadow, 0);
-    }
+    }*/
     
     for(int i = 0; i < _meshes.size(); i++){
         /*glActiveTexture(GL_TEXTURE3);
@@ -181,20 +195,19 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 		// Check if the texture has been loaded
         if (_loaded_tex_path_id.find(path) != _loaded_tex_path_id.end()){
             // path matched, loaded texture
-            //tex_ids.push_back(_loaded_tex_path_id[path]);
 			textureID = _loaded_tex_path_id[path];
         }
         else{
-            /* load the texture */
+            // Load new texture
             int width, height, chn_code;
 			
             unsigned char *data = stbi_load(path.c_str(), &width, &height, &chn_code, 0);
-			if (data == nullptr) {
+			/*if (data == nullptr) {
 				std::cout << "model.cpp: unable to open texture " << path << std::endl;
 			}
 			else {
 				std::cout << "model.cpp: Load " << path << std::endl;
-			}
+			}*/
             // Decode channels, see https://github.com/nothings/stb/blob/master/stb_image.h
             // line 147:
             //     N=#comp     components
@@ -302,6 +315,7 @@ texture_data load_png(const char* const pngFilepath)
     if (data != NULL)
     {
         // copy the raw data
+        printf("load: %s\n", pngFilepath);
         size_t dataSize = texture.width * texture.height * 4 * sizeof(unsigned char);
         texture.data = new unsigned char[dataSize];
         memcpy(texture.data, data, dataSize);
@@ -322,6 +336,9 @@ texture_data load_png(const char* const pngFilepath)
         
         // release the loaded image
         stbi_image_free(data);
+    }
+    else{
+        printf("FAILED TO LOAD: %s\n", pngFilepath);
     }
     
     return texture;

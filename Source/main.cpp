@@ -15,6 +15,7 @@
 #include "SsaoFbo.hpp"
 #include "Gbuffer.hpp"
 #include "Menu.h"
+#include "BfshadingEffect.h"
 
 
 
@@ -45,7 +46,8 @@ GLuint ssao_prog;         // Program to draw ssao
 
 GLuint tex_envmap;           // Skybox's loaded texture
 
-int current_menu = MENU_ALL;
+int current_menu = MENU_ALL; // Selected menu
+BfShadingEffect bfshading_effect; // Select shading effect
 UniformList uniforms;        // A struct to save the location of uniform variables
 MaxRangeInt* fb2screen_flag; // A flag to tell fb2screen_prog that what texture should be draw to screen.
 ViewportSize viewport_size;  // A struct to save (width, height). This will be used in fbo.reshape(...)
@@ -55,6 +57,7 @@ Camera camera = Camera();
 CubeMap* cube_map;           // Skymap
 Quad* quad;                  // Quad
 Model* mesh;
+//Model mesh = Model();
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -145,9 +148,12 @@ void My_Init(){
     uniforms.render.light_mvp_matrix = glGetUniformLocation(bf_render_prog, "light_mvp_matrix");
     uniforms.render.tex_cubemap = glGetUniformLocation(bf_render_prog, "tex_cubemap");
     uniforms.render.tex_shadow = glGetUniformLocation(bf_render_prog, "tex_shadow");
-    uniforms.render.is_shadow = glGetUniformLocation(bf_render_prog, "is_shadow");
     uniforms.render.tex = glGetUniformLocation(bf_render_prog, "tex");
     uniforms.render.tex_ssao = glGetUniformLocation(bf_render_prog, "tex_ssao");
+    uniforms.render.tex_normal_map = glGetUniformLocation(bf_render_prog, "tex_normal_map");
+    uniforms.render.is_shadow = glGetUniformLocation(bf_render_prog, "is_shadow");
+    uniforms.render.is_ssao = glGetUniformLocation(bf_render_prog, "is_ssao");
+    uniforms.render.is_normal_map = glGetUniformLocation(bf_render_prog, "is_normal_map");
     
     // Fbos
     shadow_fbo = new ShadowFbo("Shadow buffer");
@@ -182,12 +188,16 @@ void My_Init(){
                     glm::quat(vec3(0.0, 0.0, 0.0)));
     
     mesh = new Model("lost_empire/lost_empire.obj", "lost_empire/",
-    //mesh = new Model("vokselia_spawn/vokselia_spawn.obj", "vokselia_spawn/",
                       glm::vec3(0.0, 0.0, 0.0),
                       glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                       glm::vec3(0.15, 0.15, 0.15));
     mesh->log();
+    //mesh.loadmodel("lost_empire/lost_empire.obj");
     
+    // Turn on all the effects
+    bfshading_effect.normal_map = 1;
+    bfshading_effect.shadow = 1;
+    bfshading_effect.ssao = 1;
     
     My_Reshape(1440, 900);
     shadow_fbo->log();
@@ -248,20 +258,20 @@ void My_Display(){
     
     // Get a stencil map
     s_obj->beforeMakingStencilMap(viewport_size.width, viewport_size.height);
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
     s_obj->afterMakingStencilMap();
     
     // == Quad + Shadow - Model == //
     s_obj->beforeDrawQuadShadow();
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
-    quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
+    //quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
     s_obj->afterDrawQuadShadow();
     
     // == Quad - Model == //
     s_noobj->bindStencilBuffer(s_obj->depth_stencil_map, viewport_size.width, viewport_size.height);
     s_noobj->beforeDrawQuad();
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
-    quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);// false
+    //quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
     s_noobj->afterDrawQuad();
     
     // == SSAO == //
@@ -325,8 +335,12 @@ void My_Display(){
     glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
     glUniform1i(uniforms.render.tex_ssao, 4);
     
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, mesh->tex_normal_ID);
+    glUniform1i(uniforms.render.tex_normal_map, 5);
+    
     // draw mesh
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
     
     s_b->afterDrawSkyboxModel();
     
@@ -342,7 +356,7 @@ void My_Display(){
     switch(current_menu){
         case MENU_ALL:
             // differential rendering
-            glActiveTexture(GL_TEXTURE1);
+            /*glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
             glUniform1i(uniforms.fbo2screen.tex_sb, 1);
             glActiveTexture(GL_TEXTURE2);
@@ -351,26 +365,29 @@ void My_Display(){
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
             glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
-            glUniform1i(uniforms.fbo2screen.is_using_df, 1);
+            glUniform1i(uniforms.fbo2screen.is_using_df, 1);*/
+        
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
+            glUniform1i(uniforms.fbo2screen.tex, 4);
+            glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
         case MENU_DEPTH_LIGHT:
-            // Sobj
+            // depth map from light
             glActiveTexture(GL_TEXTURE4);
-            //glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
             glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
-            //glBindTexture(GL_TEXTURE_2D, g_buffer->depth_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
         case MENU_DEPTH_EYES:
-            // Snoobj
+            // depth map from eyes
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, g_buffer->depth_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
             glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
         case MENU_SSAO:
-            // Sb
+            // SSAO
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
@@ -490,6 +507,18 @@ void My_Menu(int id){
         case MENU_ALL:
             current_menu = MENU_ALL;
         break;
+        case MENU_NORMAL_MAP_ON :
+            bfshading_effect.normal_map = 1;
+            break;
+        case MENU_NORMAL_MAP_OFF:
+            bfshading_effect.normal_map = 0;
+            break;
+        case MENU_SHADOW_ON :
+            bfshading_effect.shadow = 1;
+            break;
+        case MENU_SHADOW_OFF:
+            bfshading_effect.shadow = 0;
+            break;
         default:
             break;
     }
@@ -519,9 +548,13 @@ int main(int argc, char *argv[]){
     // Create a menu and bind it to mouse right button.
     int menu_main = glutCreateMenu(My_Menu);
     int menu_timer = glutCreateMenu(My_Menu);
+    int menu_normal_map = glutCreateMenu(My_Menu);
+    int menu_shadow = glutCreateMenu(My_Menu);
     
     glutSetMenu(menu_main);
     glutAddSubMenu("Timer", menu_timer);
+    glutAddSubMenu("Normal map", menu_normal_map);
+    glutAddSubMenu("Shadow", menu_shadow);
     glutAddMenuEntry("depth map(light)", MENU_DEPTH_LIGHT);
     glutAddMenuEntry("depth map(eye)", MENU_DEPTH_EYES);
     glutAddMenuEntry("ssao", MENU_SSAO);
@@ -531,6 +564,14 @@ int main(int argc, char *argv[]){
     glutSetMenu(menu_timer);
     glutAddMenuEntry("Start", MENU_TIMER_START);
     glutAddMenuEntry("Stop", MENU_TIMER_STOP);
+    
+    glutSetMenu(menu_normal_map);
+    glutAddMenuEntry("Normal map? YES :)", MENU_NORMAL_MAP_ON);
+    glutAddMenuEntry("Normal map? NOPE :(", MENU_NORMAL_MAP_OFF);
+    
+    glutSetMenu(menu_shadow);
+    glutAddMenuEntry("Shadow? YES :)", MENU_SHADOW_ON);
+    glutAddMenuEntry("Shadow? NOPE :(", MENU_SHADOW_OFF);
     
     glutSetMenu(menu_main);
     glutAttachMenu(GLUT_RIGHT_BUTTON);

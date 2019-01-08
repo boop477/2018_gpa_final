@@ -12,9 +12,7 @@
 		4D28D4BC1CE8B00B006CC5D4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D28D4BA1CE8B00B006CC5D4 /* OpenGL.framework */; };
 		AA001CA221E25C6D00155D0C /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA001CA121E25C6D00155D0C /* libassimp.4.1.0.dylib */; };
 		AA001CA421E25C8C00155D0C /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA001CA321E25C8C00155D0C /* libGLEW.2.1.0.dylib */; };
-		AA001CA921E25D7200155D0C /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA001CA721E25D7100155D0C /* model.cpp */; };
 		AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA001CA821E25D7200155D0C /* Camera.cpp */; };
-		AA001CAD21E25E3400155D0C /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA001CAB21E25E3400155D0C /* mesh.cpp */; };
 		AA127AFC21CE1EA7007BF551 /* ShadowFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA127AFA21CE1EA7007BF551 /* ShadowFbo.cpp */; };
 		AA127AFF21CE30C5007BF551 /* Sobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA127AFD21CE30C5007BF551 /* Sobj.cpp */; };
 		AA52E37D21C959B400D48AAF /* CubeMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA52E37B21C959B400D48AAF /* CubeMap.cpp */; };
@@ -24,6 +22,8 @@
 		AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00221E3A89800842FDB /* Gbuffer.cpp */; };
 		AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00521E3AC1F00842FDB /* SsaoFbo.cpp */; };
 		AAB4D00A21E3AF9500842FDB /* Ssao.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00821E3AF9500842FDB /* Ssao.cpp */; };
+		AAF4D4DE21E469E900FFA144 /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF4D4DA21E469E800FFA144 /* mesh.cpp */; };
+		AAF4D4DF21E469E900FFA144 /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF4D4DB21E469E800FFA144 /* model.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,11 +48,7 @@
 		AA001CA121E25C6D00155D0C /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = "../../../assimp-4.1.0/lib/libassimp.4.1.0.dylib"; sourceTree = "<group>"; };
 		AA001CA321E25C8C00155D0C /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		AA001CA521E25D7100155D0C /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Camera.hpp; path = ../Source/Camera.hpp; sourceTree = "<group>"; };
-		AA001CA621E25D7100155D0C /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = model.hpp; path = ../Source/model.hpp; sourceTree = "<group>"; };
-		AA001CA721E25D7100155D0C /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model.cpp; path = ../Source/model.cpp; sourceTree = "<group>"; };
 		AA001CA821E25D7200155D0C /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = ../Source/Camera.cpp; sourceTree = "<group>"; };
-		AA001CAB21E25E3400155D0C /* mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh.cpp; path = ../Source/mesh.cpp; sourceTree = "<group>"; };
-		AA001CAC21E25E3400155D0C /* mesh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mesh.hpp; path = ../Source/mesh.hpp; sourceTree = "<group>"; };
 		AA001CB521E2C24900155D0C /* textureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = textureData.h; path = ../Source/textureData.h; sourceTree = "<group>"; };
 		AA001CB621E2C7BD00155D0C /* vertexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vertexData.h; path = ../Source/vertexData.h; sourceTree = "<group>"; };
 		AA001CB721E2D3CD00155D0C /* tex_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = tex_fragment.fs.glsl; path = ../Assets/tex_fragment.fs.glsl; sourceTree = "<group>"; };
@@ -90,6 +86,11 @@
 		AAB4D02621E3CFF700842FDB /* Menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = ../Source/Menu.h; sourceTree = "<group>"; };
 		AABAE57921D5A3C4006F7199 /* df_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_fragment.fs.glsl; path = ../Assets/df_fragment.fs.glsl; sourceTree = "<group>"; };
 		AABAE57A21D5A3C4006F7199 /* df_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_vertex.vs.glsl; path = ../Assets/df_vertex.vs.glsl; sourceTree = "<group>"; };
+		AAF4D4DA21E469E800FFA144 /* mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mesh.cpp; path = ../Source/mesh.cpp; sourceTree = "<group>"; };
+		AAF4D4DB21E469E800FFA144 /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model.cpp; path = ../Source/model.cpp; sourceTree = "<group>"; };
+		AAF4D4E321E46AA200FFA144 /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = model.hpp; path = ../Source/model.hpp; sourceTree = "<group>"; };
+		AAF4D4E421E46AA200FFA144 /* mesh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = mesh.hpp; path = ../Source/mesh.hpp; sourceTree = "<group>"; };
+		AAF4D4E521E476F700FFA144 /* BfshadingEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BfshadingEffect.h; path = ../Source/BfshadingEffect.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,10 +122,10 @@
 				AAB4D00921E3AF9500842FDB /* Ssao.hpp */,
 				AA52E37B21C959B400D48AAF /* CubeMap.cpp */,
 				AA52E37C21C959B400D48AAF /* CubeMap.hpp */,
-				AA001CAB21E25E3400155D0C /* mesh.cpp */,
-				AA001CAC21E25E3400155D0C /* mesh.hpp */,
-				AA001CA721E25D7100155D0C /* model.cpp */,
-				AA001CA621E25D7100155D0C /* model.hpp */,
+				AAF4D4DA21E469E800FFA144 /* mesh.cpp */,
+				AAF4D4E421E46AA200FFA144 /* mesh.hpp */,
+				AAF4D4DB21E469E800FFA144 /* model.cpp */,
+				AAF4D4E321E46AA200FFA144 /* model.hpp */,
 				4D28D4B91CE8B00B006CC5D4 /* GLUT.framework */,
 				4D28D4BA1CE8B00B006CC5D4 /* OpenGL.framework */,
 				4D28D4B71CE8AF45006CC5D4 /* main.cpp */,
@@ -160,6 +161,7 @@
 				AA10DC0F21C8FD0A00D17F23 /* UniformList.h */,
 				AA10DC0E21C8F36700D17F23 /* NotImplementedError.h */,
 				AA10DC0A21C8DDD400D17F23 /* Helper.h */,
+				AAF4D4E521E476F700FFA144 /* BfshadingEffect.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -261,16 +263,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA52E38021C9689000D48AAF /* Quad.cpp in Sources */,
+				AAF4D4DF21E469E900FFA144 /* model.cpp in Sources */,
 				AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */,
 				AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */,
-				AA001CA921E25D7200155D0C /* model.cpp in Sources */,
 				4D28D4B81CE8AF45006CC5D4 /* main.cpp in Sources */,
 				AA127AFF21CE30C5007BF551 /* Sobj.cpp in Sources */,
 				AA80B0D921D3DCD9007EF7E9 /* Sb.cpp in Sources */,
 				AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */,
 				AA66F58B21D3C90E00E901CE /* Snoobj.cpp in Sources */,
 				AA127AFC21CE1EA7007BF551 /* ShadowFbo.cpp in Sources */,
-				AA001CAD21E25E3400155D0C /* mesh.cpp in Sources */,
+				AAF4D4DE21E469E900FFA144 /* mesh.cpp in Sources */,
 				AA52E37D21C959B400D48AAF /* CubeMap.cpp in Sources */,
 				AAB4D00A21E3AF9500842FDB /* Ssao.cpp in Sources */,
 			);

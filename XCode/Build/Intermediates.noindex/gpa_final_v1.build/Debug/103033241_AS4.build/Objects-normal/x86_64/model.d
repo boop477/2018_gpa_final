@@ -85,6 +85,7 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/model.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/quaternion.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/type_ptr.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/UniformList.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/BfshadingEffect.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.hpp \
