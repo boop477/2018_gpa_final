@@ -27,11 +27,14 @@ struct UniformList
         GLint light_mvp_matrix;
         GLint is_quad;
         GLint is_shadow;
+        GLint is_normal_map;
+        GLint is_ssao;
         
         GLint tex_cubemap;
         GLint tex_shadow;
         GLint tex;
         GLint tex_ssao;
+        GLint tex_normal_map;
     } render;
     struct
     {
