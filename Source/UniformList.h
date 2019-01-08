@@ -31,6 +31,7 @@ struct UniformList
         GLint tex_cubemap;
         GLint tex_shadow;
         GLint tex;
+        GLint tex_ssao;
     } render;
     struct
     {

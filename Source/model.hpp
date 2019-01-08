@@ -25,8 +25,6 @@
 class Model{
 public:
     Model(std::string filename, std::string prefix, glm::vec3 position, glm::quat quaternion, glm::vec3 scale);
-    /*void draw(GLuint program, glm::mat4 view, glm::mat4 projection);
-	void draw(GLuint program, glm::mat4 view, glm::mat4 projection, glm::vec3 axis, float theta);*/
     void draw(UniformList uniform_list,
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
@@ -52,6 +50,7 @@ public:
 private:
 	std::string _prefix;
     std::vector<Mesh> _meshes;
+    std::vector<GLuint> _meshes_texture_ids;
     std::map<std::string, GLuint> _loaded_tex_path_id;
     glm::vec3 _position;
     glm::quat _quaternion;

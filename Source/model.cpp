@@ -64,7 +64,9 @@ void Model::draw(UniformList uniform_list,
     }
     
     for(int i = 0; i < _meshes.size(); i++){
-        //for (int i = 0; i < 1; i++) {
+        /*glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _meshes_texture_ids[i]);
+        glUniform1i(uniform_list.render.tex, 3);*/
         _meshes[i].draw();
     }
     
@@ -150,7 +152,7 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 	GLuint textureID;
     aiMaterial* material = scene->mMaterials[mesh_data->mMaterialIndex]; // Get the material used by this mesh
     // Load diffuse map in this material
-	if (material->GetTextureCount(aiTextureType_DIFFUSE) != 1) {
+	/*if (material->GetTextureCount(aiTextureType_DIFFUSE) != 1) {
 		std::cout << "Texture count != 1" << std::endl;
 		// Practice: load ladybug texture start
 		std::string path = "Ladybug/ladybug_diff.png";
@@ -166,12 +168,12 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		// Practice: load ladybug texture end
-		/* Push the textureID into loaded_tex_path_id (model) */
+		// Push the textureID into loaded_tex_path_id (model)
 		_loaded_tex_path_id[path] = textureID;
-		/* Push the textureID into tex_ids (mesh) */
+		// Push the textureID into tex_ids (mesh) 
 		//tex_ids.push_back(textureID);
 		std::cout << _loaded_tex_path_id[path] << "(load)" << std::endl;
-	}
+	}*/
     for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++){
         aiString name;
         material->GetTexture(aiTextureType_DIFFUSE, i, &name);
@@ -230,6 +232,7 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 			//std::cout << _loaded_tex_path_id[path] << "(load)" << std::endl;
         }
     }
+    _meshes_texture_ids.push_back(textureID);
     /* Create and return a mesh */
     return Mesh(vertices, indices, textureID);
 }

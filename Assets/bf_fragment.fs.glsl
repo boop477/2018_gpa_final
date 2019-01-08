@@ -9,6 +9,7 @@
  */
 #version 410 core
 uniform sampler2D tex;
+uniform sampler2D tex_ssao;
 uniform samplerCube tex_cubemap;
 uniform sampler2DShadow tex_shadow;
 uniform int is_quad;
@@ -31,7 +32,8 @@ out vec4 frag_color;
 
 void main(void)
 {
-    vec3 texColor = texture(tex,fs_in.tex_cord).rgb;
+    vec3 texColor = texture(tex,fs_in.tex_cord).rgb; // lost_emrpir-RGBA.png
+    float ambient = texelFetch(tex_ssao, ivec2(gl_FragCoord.xy), 0).r; // ssao map
     vec3 shadow_color = vec3(0.41, 0.36, 0.37);
     vec3 quad_color = vec3(0.64, 0.57, 0.49);
     // Shadow factor
@@ -40,14 +42,17 @@ void main(void)
     // Blinn Phong
     vec3 Id = vec3(0.5, 0.5, 0.5);
     vec3 Is = vec3(1.0, 1.0, 1.0);
-    int specular_power = 200;
+    int specular_power = 10;
     
-    vec3 Kd = vec3(0.35, 0.35, 0.35);
-    vec3 Ks = vec3(0.75, 0.75, 0.75);
+    //vec3 Kd = vec3(0.35, 0.35, 0.35); // Metal
+    vec3 Kd = texColor;
+    vec3 Ks = vec3(3.0);
+    float Ka = 0.0001;
     
-    vec3 RdKd = max(dot(fs_in.N, fs_in.L), 0.0)*Kd;
-    vec3 RsKs = pow(max(dot(fs_in.N, fs_in.H), 0.0), specular_power) * Ks;
-    vec4 bf_color = vec4(RdKd+RsKs, 1.0);
+    vec3 RdKd = max(dot(fs_in.N, normalize(fs_in.L)), 0.0)*Kd;
+    vec3 RsKs = pow(max(dot(fs_in.N, normalize(fs_in.H)), 0.0), specular_power) * Ks;
+    vec3 RaKa = vec3(texColor*1.0*ambient);
+    vec4 bf_color = vec4(RdKd+RsKs+RaKa, 1.0);
 
     // Environment mapping
     vec3 r = reflect(fs_in.view, normalize(fs_in.normal));
@@ -57,17 +62,16 @@ void main(void)
     if(is_shadow == 1){
         frag_color = vec4(texColor, 1.0)*shadow_factor;
         if (shadow_factor >= 0.5){
-            frag_color = vec4(texColor, 1.0); // No shadow
+            frag_color = bf_color; // No shadow
         }
         else{
-            frag_color = vec4(texColor, 1.0)*vec4(0.5); // Add shadow
+            frag_color = bf_color*vec4(0.5); // With shadow
         }
+        
     }
     else{
-        frag_color = vec4(texColor, 1.0);
+        frag_color = bf_color;
     }
-    //frag_color = vec4(1.0, 1.0, 1.0, 1.0);
-    //frag_color = vec4(texColor, 1.0);
     
     // drawing a quad
     if (is_quad == 1){

@@ -147,6 +147,7 @@ void My_Init(){
     uniforms.render.tex_shadow = glGetUniformLocation(bf_render_prog, "tex_shadow");
     uniforms.render.is_shadow = glGetUniformLocation(bf_render_prog, "is_shadow");
     uniforms.render.tex = glGetUniformLocation(bf_render_prog, "tex");
+    uniforms.render.tex_ssao = glGetUniformLocation(bf_render_prog, "tex_ssao");
     
     // Fbos
     shadow_fbo = new ShadowFbo("Shadow buffer");
@@ -213,9 +214,9 @@ void My_Display(){
     mat4 scale_bias_matrix = translate(mat4(), vec3(0.5f, 0.5f, 0.5f)) * scale(mat4(), vec3(0.5f, 0.5f, 0.5f));
     
     // == View and projection matrix for light space == //
-    mat4 light_proj_matrix = ortho(-shadow_range, shadow_range, -shadow_range, shadow_range, 0.0f, 70.0f); // far plane must be far enough.
+    mat4 light_proj_matrix = ortho(-shadow_range, shadow_range, -shadow_range, shadow_range, 0.0f, 20.0f); // far plane must be far enough.
     //mat4 light_view_matrix = lookAt(vec3(-31.75, 26.05, -97.72), vec3(-20.0f, -23.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
-    mat4 light_view_matrix = lookAt(vec3(5.00, 5.00, 5.00), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+    mat4 light_view_matrix = lookAt(vec3(2.50, 3.00, 5.00), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     mat4 light_vp_matrix = light_proj_matrix * light_view_matrix;
     mat4 shadow_sbpv_matrix = scale_bias_matrix * light_vp_matrix;
     
@@ -263,50 +264,6 @@ void My_Display(){
     quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
     s_noobj->afterDrawQuad();
     
-    // == Model + Skybox == //
-    s_b->beforeDrawSkyboxModel();
-    // - Draw skybox - //
-    glUseProgram(skybox_prog);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
-    glUniform1i(uniforms.skybox.tex_cubemap, 2);
-    
-    cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
-    
-    // - Draw the model - //
-    
-    glUseProgram(bf_render_prog);
-    
-    // Bind textures
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
-    glUniform1i(uniforms.render.tex_shadow, 1);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
-    glUniform1i(uniforms.render.tex_cubemap, 2);
-    
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
-    glUniform1i(uniforms.render.tex, 3);
-    
-    /*glUseProgram(tex_render_prog);
-    
-    // Bind textures
-    //glActiveTexture(GL_TEXTURE1);
-    //glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
-    //glUniform1i(uniforms.tex_render.tex_shadow, 1);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
-    glUniform1i(uniforms.tex_render.tex, 2);*/
-    
-    // draw mesh
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
-    
-    s_b->afterDrawSkyboxModel();
-    
     // == SSAO == //
     // depth-normal path
     g_buffer->beforeDraw();
@@ -335,6 +292,43 @@ void My_Display(){
     glBindVertexArray(ssao_c.ssao_vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     ssao_fbo->afterDraw();
+    
+    // == Model + Skybox == //
+    s_b->beforeDrawSkyboxModel();
+    // - Draw skybox - //
+    glUseProgram(skybox_prog);
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
+    glUniform1i(uniforms.skybox.tex_cubemap, 2);
+    
+    cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
+    
+    // - Draw the model - //
+    
+    glUseProgram(bf_render_prog);
+    
+    // Bind textures
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
+    glUniform1i(uniforms.render.tex_shadow, 1);
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
+    glUniform1i(uniforms.render.tex_cubemap, 2);
+    
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
+    glUniform1i(uniforms.render.tex, 3);
+    
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
+    glUniform1i(uniforms.render.tex_ssao, 4);
+    
+    // draw mesh
+    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, true);
+    
+    s_b->afterDrawSkyboxModel();
     
     // == FBO to screen == //
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -430,31 +424,26 @@ void My_Keyboard(unsigned char key, int x, int y)
     float unit = 0.5;
     if (key == 'w') {
         camera.moveFront();
-        printf("w");
     }
     else if (key == 's') {
         camera.moveBack();
-        printf("s");
     }
     else if (key == 'a') {
         camera.moveLeft();
-        printf("a");
     }
     else if (key == 'd') {
         camera.moveRight();
-        printf("d");
     }
     else if (key == 'z') {
         camera.moveUp();
-        printf("Z");
     }
     else if (key == 'x') {
         camera.moveDown();
-        printf("X");
     }
     else if(key == 'i'){
         fb2screen_flag->add(1);
     }
+    printf("%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
 }
 void My_SpecialKeys(int key, int x, int y){
     switch (key)
