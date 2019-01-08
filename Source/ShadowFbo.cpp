@@ -63,6 +63,7 @@ void ShadowFbo::beforeDraw(){
 }
 void ShadowFbo::afterDraw(){
     glDisable(GL_POLYGON_OFFSET_FILL);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 void ShadowFbo::log(){
     printf("= = = = = =\n");

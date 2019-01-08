@@ -39,16 +39,7 @@ Model::Model(std::string filename, std::string prefix, glm::vec3 position = glm:
     
 	std::cout << "Model.cpp: Parsing done, release scene" << std::endl;
 }
-
-/*void Model::draw(GLuint program,
-                 glm::mat4 view,
-                 glm::mat4 projection){
-	
-    for(int i = 0; i < _meshes.size(); i++){
-	//for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(program, _position, _quaternion, _scale, view, projection);
-    }
-}*/
+// Diffuse map + texture
 void Model::draw(UniformList uniform_list,
                 glm::mat4 view_matrix,
                 glm::mat4 proj_matrix,
@@ -58,54 +49,62 @@ void Model::draw(UniformList uniform_list,
      * Should invoke glUseProgram before calling this function.
      * Use this function to draw a model with environment mapping, shadow and BF lighting.
      */
-    for(int i = 0; i < _meshes.size(); i++){
-        //for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(uniform_list,
-                        view_matrix,
-                        proj_matrix,
-                        light_vp_matrix,
-                        is_shadow,
-                        _position,
-                        _quaternion,
-                        _scale);
+    glm::mat4 model = getModelMatrix();
+    glm::mat4 light_mvp_matrix = light_vp_matrix * model;
+    glUniformMatrix4fv(uniform_list.render.model_matrix, 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(uniform_list.render.view_matrix, 1, GL_FALSE, &view_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.render.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.render.light_mvp_matrix, 1, GL_FALSE, &light_mvp_matrix[0][0]);
+    //glUniform1i(uniform_list.render.is_quad, 0);
+    if(is_shadow){
+        glUniform1i(uniform_list.render.is_shadow, 1);
     }
+    else{
+        glUniform1i(uniform_list.render.is_shadow, 0);
+    }
+    
+    for(int i = 0; i < _meshes.size(); i++){
+        /*glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, _meshes_texture_ids[i]);
+        glUniform1i(uniform_list.render.tex, 3);*/
+        _meshes[i].draw();
+    }
+    
+    glUniform1i(uniform_list.render.is_quad, 0);
 }
-
+// For shadow map from light view
 void Model::draw(UniformList uniform_list,
                glm::mat4 light_vp_matrix){
     /*
      * Should invoke glUseProgram before calling this function.
-     * Invoke this function to get a depth map.
+     * Invoke this function to get a depth map from light.
      */
+    glm::mat4 model = getModelMatrix();   // Assign uniforms
+    glUniformMatrix4fv(uniform_list.depth.mvp, 1, GL_FALSE, value_ptr(light_vp_matrix * model));
+    
     for(int i = 0; i < _meshes.size(); i++){
-        //for (int i = 0; i < 1; i++) {
-        _meshes[i].draw(uniform_list,
-                        light_vp_matrix,
-                        _position,
-                        _quaternion,
-                        _scale);
+        _meshes[i].draw();
     }
 }
-
-/*
-void Model::draw(GLuint program,
-				glm::mat4 view,
-				glm::mat4 projection,
-				glm::vec3 axis,
-				float theta) {
-	glUseProgram(program);
-	glm::mat4 model = getModelMatrix(_position, _quaternion, _scale);
-	glm::vec3 end = glm::vec3(glm::inverse(view*model)*
-		glm::vec4(axis, 1));
-	glm::vec3 start = glm::vec3(glm::inverse(view*model)*
-		glm::vec4(0.0,0.0,0.0, 1.0));
-	glm::quat q = glm::angleAxis(glm::radians(theta), end - start);
-	addQuaternion(q);
-
-	for (int i = 0; i < _meshes.size(); i++) {
-		_meshes[i].draw(program, _position, _quaternion, _scale, view, projection);
-	}
-}*/
+// For ssao
+void Model::draw(UniformList uniform_list,
+                 glm::mat4 view_matrix,
+                 glm::mat4 proj_matrix){
+    /*
+     * Should invoke glUseProgram before calling this function.
+     * Invoke this function to get a depth map and a normal map.
+     * Those maps will be used to get a ssao map.
+     */
+    glm::mat4 model = getModelMatrix();
+    glm::mat4 mv_matrix = view_matrix * model;
+    
+    glUniformMatrix4fv(uniform_list.depth_normal.mv_matrix, 1, GL_FALSE, &mv_matrix[0][0]);
+    glUniformMatrix4fv(uniform_list.depth_normal.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+    
+    for(int i = 0; i < _meshes.size(); i++){
+        _meshes[i].draw();
+    }
+}
 
 void Model::parseTree(aiNode* node, const aiScene* scene){
     // Parse meshes of this node
@@ -153,7 +152,7 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 	GLuint textureID;
     aiMaterial* material = scene->mMaterials[mesh_data->mMaterialIndex]; // Get the material used by this mesh
     // Load diffuse map in this material
-	if (material->GetTextureCount(aiTextureType_DIFFUSE) != 1) {
+	/*if (material->GetTextureCount(aiTextureType_DIFFUSE) != 1) {
 		std::cout << "Texture count != 1" << std::endl;
 		// Practice: load ladybug texture start
 		std::string path = "Ladybug/ladybug_diff.png";
@@ -169,12 +168,12 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		// Practice: load ladybug texture end
-		/* Push the textureID into loaded_tex_path_id (model) */
+		// Push the textureID into loaded_tex_path_id (model)
 		_loaded_tex_path_id[path] = textureID;
-		/* Push the textureID into tex_ids (mesh) */
+		// Push the textureID into tex_ids (mesh) 
 		//tex_ids.push_back(textureID);
 		std::cout << _loaded_tex_path_id[path] << "(load)" << std::endl;
-	}
+	}*/
     for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++){
         aiString name;
         material->GetTexture(aiTextureType_DIFFUSE, i, &name);
@@ -233,6 +232,7 @@ Mesh Model::parseMesh(aiMesh* mesh_data, const aiScene* scene){
 			//std::cout << _loaded_tex_path_id[path] << "(load)" << std::endl;
         }
     }
+    _meshes_texture_ids.push_back(textureID);
     /* Create and return a mesh */
     return Mesh(vertices, indices, textureID);
 }
@@ -277,13 +277,13 @@ GLuint Model::getTextureID(std::string path) {
 	}
 }
 
-glm::mat4 Model::getModelMatrix(glm::vec3 position, glm::quat quaternion, glm::vec3 scale) {
+glm::mat4 Model::getModelMatrix() {
 	// Translation matrix
-	glm::mat4 translation_matrix = glm::translate(glm::mat4(), position);
+	glm::mat4 translation_matrix = glm::translate(glm::mat4(), _position);
 	// Rotation matrix
-	glm::mat4 rotation_matrix = glm::toMat4(quaternion);
+	glm::mat4 rotation_matrix = glm::toMat4(_quaternion);
 	// Scale matrix
-	glm::mat4 scale_matrix = glm::scale(scale);
+	glm::mat4 scale_matrix = glm::scale(_scale);
 
 	return translation_matrix * rotation_matrix * scale_matrix;
 }

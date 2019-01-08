@@ -14,7 +14,8 @@ uniform mat4 view_matrix;
 uniform mat4 proj_matrix;
 uniform mat4 mv_matrix;
 uniform mat4 light_mvp_matrix;
-uniform vec3 light_pos = vec3(-31.75, 26.05, -97.72); // light position in WORLD SPACE!
+//uniform vec3 light_pos = vec3(5.00, 5.00, 5.00); // light position in WORLD SPACE!
+uniform vec3 light_pos = vec3(2.50, 3.00, 5.00);
 
 /*layout (location = 0) in vec4 position;
 layout (location = 1) in vec3 normal;*/
@@ -40,7 +41,7 @@ void main(void)
 {
     mat4 _mv_matrix = view_matrix * model_matrix;
     
-    // Texture
+    // Texture(0, 1)
     vs_out.tex_cord = tex_cord;
     
     // Shadow

@@ -21,6 +21,9 @@
 		AA52E38021C9689000D48AAF /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA52E37E21C9689000D48AAF /* Quad.cpp */; };
 		AA66F58B21D3C90E00E901CE /* Snoobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA66F58921D3C90E00E901CE /* Snoobj.cpp */; };
 		AA80B0D921D3DCD9007EF7E9 /* Sb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80B0D721D3DCD9007EF7E9 /* Sb.cpp */; };
+		AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00221E3A89800842FDB /* Gbuffer.cpp */; };
+		AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00521E3AC1F00842FDB /* SsaoFbo.cpp */; };
+		AAB4D00A21E3AF9500842FDB /* Ssao.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00821E3AF9500842FDB /* Ssao.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -74,6 +77,17 @@
 		AA66F58A21D3C90E00E901CE /* Snoobj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Snoobj.hpp; path = ../Source/Snoobj.hpp; sourceTree = "<group>"; };
 		AA80B0D721D3DCD9007EF7E9 /* Sb.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Sb.cpp; path = ../Source/Sb.cpp; sourceTree = "<group>"; };
 		AA80B0D821D3DCD9007EF7E9 /* Sb.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Sb.hpp; path = ../Source/Sb.hpp; sourceTree = "<group>"; };
+		AAB4D00221E3A89800842FDB /* Gbuffer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Gbuffer.cpp; path = ../Source/Gbuffer.cpp; sourceTree = "<group>"; };
+		AAB4D00321E3A89800842FDB /* Gbuffer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Gbuffer.hpp; path = ../Source/Gbuffer.hpp; sourceTree = "<group>"; };
+		AAB4D00521E3AC1F00842FDB /* SsaoFbo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SsaoFbo.cpp; path = ../Source/SsaoFbo.cpp; sourceTree = "<group>"; };
+		AAB4D00621E3AC1F00842FDB /* SsaoFbo.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = SsaoFbo.hpp; path = ../Source/SsaoFbo.hpp; sourceTree = "<group>"; };
+		AAB4D00821E3AF9500842FDB /* Ssao.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Ssao.cpp; path = ../Source/Ssao.cpp; sourceTree = "<group>"; };
+		AAB4D00921E3AF9500842FDB /* Ssao.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Ssao.hpp; path = ../Source/Ssao.hpp; sourceTree = "<group>"; };
+		AAB4D01C21E3C19A00842FDB /* ssao_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ssao_fragment.fs.glsl; path = ../Assets/ssao_fragment.fs.glsl; sourceTree = "<group>"; };
+		AAB4D01D21E3C19A00842FDB /* depth_normal_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_normal_vertex.vs.glsl; path = ../Assets/depth_normal_vertex.vs.glsl; sourceTree = "<group>"; };
+		AAB4D01E21E3C19A00842FDB /* depth_normal_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_normal_fragment.fs.glsl; path = ../Assets/depth_normal_fragment.fs.glsl; sourceTree = "<group>"; };
+		AAB4D01F21E3C19B00842FDB /* ssao_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ssao_vertex.vs.glsl; path = ../Assets/ssao_vertex.vs.glsl; sourceTree = "<group>"; };
+		AAB4D02621E3CFF700842FDB /* Menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Menu.h; path = ../Source/Menu.h; sourceTree = "<group>"; };
 		AABAE57921D5A3C4006F7199 /* df_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_fragment.fs.glsl; path = ../Assets/df_fragment.fs.glsl; sourceTree = "<group>"; };
 		AABAE57A21D5A3C4006F7199 /* df_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_vertex.vs.glsl; path = ../Assets/df_vertex.vs.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,6 +117,8 @@
 				AA52E37F21C9689000D48AAF /* Quad.hpp */,
 				AA001CA821E25D7200155D0C /* Camera.cpp */,
 				AA001CA521E25D7100155D0C /* Camera.hpp */,
+				AAB4D00821E3AF9500842FDB /* Ssao.cpp */,
+				AAB4D00921E3AF9500842FDB /* Ssao.hpp */,
 				AA52E37B21C959B400D48AAF /* CubeMap.cpp */,
 				AA52E37C21C959B400D48AAF /* CubeMap.hpp */,
 				AA001CAB21E25E3400155D0C /* mesh.cpp */,
@@ -137,6 +153,7 @@
 		AA66F58821D3C8BC00E901CE /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				AAB4D02621E3CFF700842FDB /* Menu.h */,
 				AA001CB621E2C7BD00155D0C /* vertexData.h */,
 				AA001CB521E2C24900155D0C /* textureData.h */,
 				AA0023CA21D67F5A00F2FE83 /* MaxRangeInt.h */,
@@ -158,6 +175,10 @@
 				AA80B0D821D3DCD9007EF7E9 /* Sb.hpp */,
 				AA127AFA21CE1EA7007BF551 /* ShadowFbo.cpp */,
 				AA127AFB21CE1EA7007BF551 /* ShadowFbo.hpp */,
+				AAB4D00221E3A89800842FDB /* Gbuffer.cpp */,
+				AAB4D00321E3A89800842FDB /* Gbuffer.hpp */,
+				AAB4D00521E3AC1F00842FDB /* SsaoFbo.cpp */,
+				AAB4D00621E3AC1F00842FDB /* SsaoFbo.hpp */,
 			);
 			name = Fbos;
 			sourceTree = "<group>";
@@ -165,6 +186,10 @@
 		AABAE57B21D5A3EF006F7199 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
+				AAB4D01E21E3C19A00842FDB /* depth_normal_fragment.fs.glsl */,
+				AAB4D01D21E3C19A00842FDB /* depth_normal_vertex.vs.glsl */,
+				AAB4D01C21E3C19A00842FDB /* ssao_fragment.fs.glsl */,
+				AAB4D01F21E3C19B00842FDB /* ssao_vertex.vs.glsl */,
 				AA13D3C921CA2B40009AC6C0 /* depth_fragment.fs.glsl */,
 				AA13D3C821CA2B3F009AC6C0 /* depth_vertex.vs.glsl */,
 				AA3B8BB521C4DC5800DEEDEA /* skybox_fragment.fs.glsl */,
@@ -236,15 +261,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA52E38021C9689000D48AAF /* Quad.cpp in Sources */,
+				AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */,
 				AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */,
 				AA001CA921E25D7200155D0C /* model.cpp in Sources */,
 				4D28D4B81CE8AF45006CC5D4 /* main.cpp in Sources */,
 				AA127AFF21CE30C5007BF551 /* Sobj.cpp in Sources */,
 				AA80B0D921D3DCD9007EF7E9 /* Sb.cpp in Sources */,
+				AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */,
 				AA66F58B21D3C90E00E901CE /* Snoobj.cpp in Sources */,
 				AA127AFC21CE1EA7007BF551 /* ShadowFbo.cpp in Sources */,
 				AA001CAD21E25E3400155D0C /* mesh.cpp in Sources */,
 				AA52E37D21C959B400D48AAF /* CubeMap.cpp in Sources */,
+				AAB4D00A21E3AF9500842FDB /* Ssao.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

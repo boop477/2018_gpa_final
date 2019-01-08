@@ -28,31 +28,7 @@ public:
     Mesh(std::vector<Vertex> vertices,
          std::vector<unsigned int> indices,
 		 GLuint tex_ids);
-    /*
-    void draw(GLuint program,
-              glm::vec3 position,
-              glm::quat quaternion,
-              glm::vec3 scale,
-              glm::mat4 view,
-              glm::mat4 projection);*/
-    void draw(UniformList,
-              glm::mat4,
-              glm::mat4,
-              glm::mat4,
-              bool);
-    void draw(UniformList uniform_list,
-              glm::mat4 light_vp_matrix,
-              glm::vec3 position,
-              glm::quat quaternion,
-              glm::vec3 scale);
-    void draw(UniformList uniform_list,
-                glm::mat4 view_matrix,
-                glm::mat4 proj_matrix,
-                glm::mat4 light_vp_matrix,
-                bool is_shadow,
-                glm::vec3 position,
-                glm::quat quaternion,
-              glm::vec3 scale);
+    void draw();
 
 	void log();
 	void logTexId();

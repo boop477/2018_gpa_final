@@ -31,6 +31,7 @@ struct UniformList
         GLint tex_cubemap;
         GLint tex_shadow;
         GLint tex;
+        GLint tex_ssao;
     } render;
     struct
     {
@@ -51,6 +52,19 @@ struct UniformList
         GLint proj_matrix;
         GLint tex;
     } tex_render;
+    struct
+    {
+        GLint mv_matrix;
+        GLint proj_matrix;
+    } depth_normal;
+    struct
+    {
+        GLint normal_map;
+        GLint depth_map;
+        GLint noise_map;
+        GLint noise_scale;
+        GLint proj;
+    } ssao;
     struct
     {
         GLint view_matrix;
