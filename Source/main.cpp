@@ -356,7 +356,7 @@ void My_Display(){
     switch(current_menu){
         case MENU_ALL:
             // differential rendering
-            glActiveTexture(GL_TEXTURE1);
+            /*glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
             glUniform1i(uniforms.fbo2screen.tex_sb, 1);
             glActiveTexture(GL_TEXTURE2);
@@ -365,7 +365,12 @@ void My_Display(){
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
             glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
-            glUniform1i(uniforms.fbo2screen.is_using_df, 1);
+            glUniform1i(uniforms.fbo2screen.is_using_df, 1);*/
+        
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
+            glUniform1i(uniforms.fbo2screen.tex, 4);
+            glUniform1i(uniforms.fbo2screen.is_using_df, 0);
             break;
         case MENU_DEPTH_LIGHT:
             // depth map from light
