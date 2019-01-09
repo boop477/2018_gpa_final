@@ -184,13 +184,8 @@ void My_Init(){
                     vec3(1.0, 1.0, 1.0),
                     glm::quat(vec3(0.0, 0.0, 0.0)));
     
-    /*mesh = new Model("lost_empire/lost_empire.obj", "lost_empire/",
-                      glm::vec3(0.0, 0.0, 0.0),
-                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
-                      glm::vec3(0.15, 0.15, 0.15));*/
-    //mesh->log();
     //mesh.loadmodel("lost_empire/lost_empire.obj");
-    mesh = new Model("lost_empire/lost_empire.obj",
+    mesh = new Model("Space/Space Station Scene.obj",
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
