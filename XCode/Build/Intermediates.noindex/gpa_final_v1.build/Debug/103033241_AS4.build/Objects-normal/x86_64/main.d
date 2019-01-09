@@ -1,6 +1,7 @@
 dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/Common.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/TinyOBJ/tiny_obj_loader.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Include/TinyOBJ/tiny_obj_loader.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/STB/stb_image.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/glm.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/detail/_fixes.hpp \

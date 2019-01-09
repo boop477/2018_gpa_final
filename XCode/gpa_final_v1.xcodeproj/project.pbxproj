@@ -15,6 +15,11 @@
 		AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA001CA821E25D7200155D0C /* Camera.cpp */; };
 		AA127AFC21CE1EA7007BF551 /* ShadowFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA127AFA21CE1EA7007BF551 /* ShadowFbo.cpp */; };
 		AA127AFF21CE30C5007BF551 /* Sobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA127AFD21CE30C5007BF551 /* Sobj.cpp */; };
+		AA3F708021E63719000CFA51 /* fbxloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3F707E21E63718000CFA51 /* fbxloader.cpp */; };
+		AA3F708621E63955000CFA51 /* libILU.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708321E63955000CFA51 /* libILU.dylib */; };
+		AA3F708721E63955000CFA51 /* libILUT.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708421E63955000CFA51 /* libILUT.dylib */; };
+		AA3F708821E63955000CFA51 /* libIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708521E63955000CFA51 /* libIL.dylib */; };
+		AA3F708A21E63974000CFA51 /* libfbxsdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708921E63974000CFA51 /* libfbxsdk.dylib */; };
 		AA52E37D21C959B400D48AAF /* CubeMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA52E37B21C959B400D48AAF /* CubeMap.cpp */; };
 		AA52E38021C9689000D48AAF /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA52E37E21C9689000D48AAF /* Quad.cpp */; };
 		AA66F58B21D3C90E00E901CE /* Snoobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA66F58921D3C90E00E901CE /* Snoobj.cpp */; };
@@ -63,6 +68,14 @@
 		AA13D3C921CA2B40009AC6C0 /* depth_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_fragment.fs.glsl; path = ../Assets/depth_fragment.fs.glsl; sourceTree = "<group>"; };
 		AA3B8BB521C4DC5800DEEDEA /* skybox_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = skybox_fragment.fs.glsl; path = ../Assets/skybox_fragment.fs.glsl; sourceTree = "<group>"; };
 		AA3B8BB621C4DC5800DEEDEA /* skybox_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = skybox_vertex.vs.glsl; path = ../Assets/skybox_vertex.vs.glsl; sourceTree = "<group>"; };
+		AA3F707D21E63718000CFA51 /* fbximport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fbximport.h; path = ../Source/FBXLoader/fbximport.h; sourceTree = "<group>"; };
+		AA3F707E21E63718000CFA51 /* fbxloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fbxloader.cpp; path = ../Source/FBXLoader/fbxloader.cpp; sourceTree = "<group>"; };
+		AA3F707F21E63718000CFA51 /* fbxloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fbxloader.h; path = ../Source/FBXLoader/fbxloader.h; sourceTree = "<group>"; };
+		AA3F708121E6392C000CFA51 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = ../../../../../usr/local/Cellar/devil/1.8.0_1/lib; sourceTree = "<group>"; };
+		AA3F708321E63955000CFA51 /* libILU.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILU.dylib; path = ../../../../../usr/local/Cellar/devil/1.8.0_1/lib/libILU.dylib; sourceTree = "<group>"; };
+		AA3F708421E63955000CFA51 /* libILUT.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILUT.dylib; path = ../../../../../usr/local/Cellar/devil/1.8.0_1/lib/libILUT.dylib; sourceTree = "<group>"; };
+		AA3F708521E63955000CFA51 /* libIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libIL.dylib; path = ../../../../../usr/local/Cellar/devil/1.8.0_1/lib/libIL.dylib; sourceTree = "<group>"; };
+		AA3F708921E63974000CFA51 /* libfbxsdk.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfbxsdk.dylib; path = ../../../FBX_SDK/2019.2/lib/clang/release/libfbxsdk.dylib; sourceTree = "<group>"; };
 		AA52E37B21C959B400D48AAF /* CubeMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CubeMap.cpp; path = ../Source/CubeMap.cpp; sourceTree = "<group>"; };
 		AA52E37C21C959B400D48AAF /* CubeMap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = CubeMap.hpp; path = ../Source/CubeMap.hpp; sourceTree = "<group>"; };
 		AA52E37E21C9689000D48AAF /* Quad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Quad.cpp; path = ../Source/Quad.cpp; sourceTree = "<group>"; };
@@ -94,6 +107,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3F708A21E63974000CFA51 /* libfbxsdk.dylib in Frameworks */,
+				AA3F708621E63955000CFA51 /* libILU.dylib in Frameworks */,
+				AA3F708721E63955000CFA51 /* libILUT.dylib in Frameworks */,
+				AA3F708821E63955000CFA51 /* libIL.dylib in Frameworks */,
 				AA001CA421E25C8C00155D0C /* libGLEW.2.1.0.dylib in Frameworks */,
 				AA001CA221E25C6D00155D0C /* libassimp.4.1.0.dylib in Frameworks */,
 				4D28D4BB1CE8B00B006CC5D4 /* GLUT.framework in Frameworks */,
@@ -107,6 +124,7 @@
 		4D28D4A21CE8AEE0006CC5D4 = {
 			isa = PBXGroup;
 			children = (
+				AA3C1BF721E6284700C687B3 /* Fbx */,
 				AA7B547D21D694240041A6B5 /* Fbos */,
 				AABAE57B21D5A3EF006F7199 /* Shaders */,
 				AA66F58821D3C8BC00E901CE /* Helpers */,
@@ -139,10 +157,25 @@
 		AA001CA021E25C6D00155D0C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA3F708921E63974000CFA51 /* libfbxsdk.dylib */,
+				AA3F708521E63955000CFA51 /* libIL.dylib */,
+				AA3F708321E63955000CFA51 /* libILU.dylib */,
+				AA3F708421E63955000CFA51 /* libILUT.dylib */,
+				AA3F708121E6392C000CFA51 /* lib */,
 				AA001CA321E25C8C00155D0C /* libGLEW.2.1.0.dylib */,
 				AA001CA121E25C6D00155D0C /* libassimp.4.1.0.dylib */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AA3C1BF721E6284700C687B3 /* Fbx */ = {
+			isa = PBXGroup;
+			children = (
+				AA3F707D21E63718000CFA51 /* fbximport.h */,
+				AA3F707E21E63718000CFA51 /* fbxloader.cpp */,
+				AA3F707F21E63718000CFA51 /* fbxloader.h */,
+			);
+			name = Fbx;
 			sourceTree = "<group>";
 		};
 		AA66F58821D3C8BC00E901CE /* Helpers */ = {
@@ -257,6 +290,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA52E38021C9689000D48AAF /* Quad.cpp in Sources */,
+				AA3F708021E63719000CFA51 /* fbxloader.cpp in Sources */,
 				AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */,
 				AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */,
 				4D28D4B81CE8AF45006CC5D4 /* main.cpp in Sources */,
@@ -357,9 +391,17 @@
 		4D28D4B31CE8AEE0006CC5D4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"~/ComputerGraphics/gpa_final/Include/GLM",
+					"~/ComputerGraphics/gpa_final/Include/TinyOBJ",
+					"~/ComputerGraphics/gpa_final/Include/fbxsdk",
+					"~/ComputerGraphics/gpa_final/Include/devil",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.1.0/lib,
 					"~/assimp-4.1.0/lib",
+					/usr/local/Cellar/devil/1.8.0_1/lib,
+					"~/FBX_SDK/2019.2/lib/clang/release",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -371,6 +413,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.1.0/lib,
 					"~/assimp-4.1.0/lib",
+					/usr/local/Cellar/devil/1.8.0_1/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
