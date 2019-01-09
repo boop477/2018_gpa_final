@@ -78,13 +78,11 @@ public:
 			string name = textures[i].type;
             if (name == "texture_diffuse"){
                 number = std::to_string(diffuseNr++);
-                printf("GL_TEXTURE%d bind %s->%d id %d\n", i+base, (name + number).c_str(), i+base, textures[i].id);
             }
 			else if (name == "texture_specular")
 				number = std::to_string(specularNr++); // transfer unsigned int to stream
             else if (name == "texture_normal"){
                 number = std::to_string(normalNr++); // transfer unsigned int to stream
-                printf("GL_TEXTURE%d bind %s->%d id %d\n", i, (name + number).c_str(), i, textures[i].id);
             }
 			else if (name == "texture_height")
 				number = std::to_string(heightNr++); // transfer unsigned int to stream
