@@ -32,9 +32,11 @@ void Camera::reshape(int width, int height) {
     glViewport(0, 0, width, height);
 	float viewportAspect = (float)width / (float)height;
 	projection = glm::perspective(glm::radians(60.0f), viewportAspect, 0.1f, 1000.0f);
+    //projection = glm::perspective(glm::radians(60.0f), viewportAspect, 0.1f, 10000.0f);
 }
 glm::mat4 Camera::getView() {
 	view = glm::lookAt(eye_pos, eye_pos + eye_front, eye_up);
+    //view = lookAt(glm::vec3(-2.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	return view;
 }
 glm::mat4 Camera::getProjection() {

@@ -14,7 +14,6 @@
 #include "../../Include/GLM/glm/gtc/quaternion.hpp"
 #include "../../Include/GLM/glm/gtx/transform.hpp"
 
-
 typedef struct _fbx_handles
 {
     _fbx_handles()
