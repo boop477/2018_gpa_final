@@ -1,6 +1,5 @@
-dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.cpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/vertexData.h \
+dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/Mesh.cpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Mesh.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/glm.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/detail/_fixes.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/fwd.hpp \
@@ -79,14 +78,7 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/../gtc/constants.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/constants.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/matrix_transform.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/type_ptr.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/../gtc/quaternion.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/quaternion.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/quaternion.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/type_ptr.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/UniformList.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/../gtx/norm.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/norm.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.inl
+  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.inl

@@ -9,16 +9,13 @@
 #include "Snoobj.hpp"
 #include "Sb.hpp"
 #include "MaxRangeInt.h"
-#include "model.hpp"
+#include "model.h"
 #include "Camera.hpp"
 #include "Ssao.hpp"
 #include "SsaoFbo.hpp"
 #include "Gbuffer.hpp"
 #include "Menu.h"
 #include "BfshadingEffect.h"
-
-
-
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
@@ -139,7 +136,7 @@ void My_Init(){
     bf_render_prog = createProgram("bf_vertex.vs.glsl", "bf_fragment.fs.glsl", "bf_render");
     glUseProgram(bf_render_prog);
     
-    
+    uniforms.render.program_id = bf_render_prog;
     uniforms.render.mv_matrix = glGetUniformLocation(bf_render_prog, "mv_matrix");
     uniforms.render.model_matrix = glGetUniformLocation(bf_render_prog, "model_matrix");
     uniforms.render.view_matrix = glGetUniformLocation(bf_render_prog, "view_matrix");
@@ -187,12 +184,16 @@ void My_Init(){
                     vec3(1.0, 1.0, 1.0),
                     glm::quat(vec3(0.0, 0.0, 0.0)));
     
-    mesh = new Model("lost_empire/lost_empire.obj", "lost_empire/",
+    /*mesh = new Model("lost_empire/lost_empire.obj", "lost_empire/",
                       glm::vec3(0.0, 0.0, 0.0),
                       glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
-                      glm::vec3(0.15, 0.15, 0.15));
-    mesh->log();
+                      glm::vec3(0.15, 0.15, 0.15));*/
+    //mesh->log();
     //mesh.loadmodel("lost_empire/lost_empire.obj");
+    mesh = new Model("lost_empire/lost_empire.obj",
+                     glm::vec3(0.0, 0.0, 0.0),
+                     glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
+                     glm::vec3(0.15, 0.15, 0.15));
     
     // Turn on all the effects
     bfshading_effect.normal_map = 1;
@@ -328,16 +329,16 @@ void My_Display(){
     glUniform1i(uniforms.render.tex_cubemap, 2);
     
     glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
+    glUniform1i(uniforms.render.tex_ssao, 3);
+    
+    /*glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
     glUniform1i(uniforms.render.tex, 3);
     
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
-    glUniform1i(uniforms.render.tex_ssao, 4);
-    
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, mesh->tex_normal_ID);
-    glUniform1i(uniforms.render.tex_normal_map, 5);
+    glUniform1i(uniforms.render.tex_normal_map, 5);*/
     
     // draw mesh
     mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
@@ -540,7 +541,7 @@ int main(int argc, char *argv[]){
     glutInitWindowSize(1440, 900);
     glutCreateWindow("Assignment 4"); // You cannot use OpenGL functions before this line; The OpenGL context must be created first by glutCreateWindow()!
 #ifdef _MSC_VER
-    glewInit();H
+    glewInit();
 #endif
     dumpInfo();
     My_Init();

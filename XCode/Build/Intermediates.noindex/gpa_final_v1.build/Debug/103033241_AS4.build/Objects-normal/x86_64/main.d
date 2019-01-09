@@ -96,9 +96,8 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Snoobj.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Sb.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/MaxRangeInt.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/model.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/vertexData.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/model.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/BfshadingEffect.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/../gtx/norm.hpp \

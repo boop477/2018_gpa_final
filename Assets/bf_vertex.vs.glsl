@@ -20,9 +20,15 @@ uniform vec3 light_pos = vec3(2.50, 3.00, 5.00);
 /*layout (location = 0) in vec4 position;
 layout (location = 1) in vec3 normal;*/
 
-layout(location = 0) in vec4 position;
+/*layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 tex_cord;
-layout(location = 2) in vec3 normal;
+layout(location = 2) in vec3 normal;*/
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 tex_cord;
+layout(location = 3) in vec3 iv3tangent;
+layout(location = 4) in vec3 iv2bitangent;
 
 out VS_OUT
 {
@@ -45,10 +51,10 @@ void main(void)
     vs_out.tex_cord = tex_cord;
     
     // Shadow
-    vs_out.shadow_coord = light_mvp_matrix * position;
+    vs_out.shadow_coord = light_mvp_matrix * vec4(position,1);
     
     // BP
-    vec4 P = _mv_matrix * position;      // Position in camera space
+    vec4 P = _mv_matrix * vec4(position,1);      // Position in camera space
     vec4 light_view_space = view_matrix * vec4(light_pos, 1.0);  // we need to convert the light position from world space to camera space by multiplying the view matrix.
     
     vs_out.N = mat3(_mv_matrix) * normal;           // Normal in view space
@@ -57,9 +63,9 @@ void main(void)
     vs_out.H = normalize((light_view_space.xyz - P.xyz) + v);
     
     // Environment mapping
-    vec4 pos_vs = _mv_matrix * position;
+    vec4 pos_vs = _mv_matrix * vec4(position,1);
     vs_out.normal = mat3(_mv_matrix) * normal;
     vs_out.view = pos_vs.xyz;
     
     gl_Position = proj_matrix * pos_vs;
-}                                     
+}

@@ -1,7 +1,6 @@
-dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/model.cpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/model.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/mesh.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/vertexData.h \
+dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/Model.cpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Model.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Mesh.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/glm.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/detail/_fixes.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/fwd.hpp \
@@ -80,14 +79,12 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/model.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/../gtc/constants.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/constants.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/matrix_transform.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/type_ptr.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/../gtc/quaternion.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/quaternion.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/quaternion.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtc/type_ptr.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/UniformList.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/BfshadingEffect.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.inl \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/UniformList.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/BfshadingEffect.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/../gtx/norm.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/norm.inl \
@@ -122,5 +119,5 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/model.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/anim.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/metadata.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/assimp/postprocess.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/textureData.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/STB/stb_image.h
+  /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/STB/stb_image.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/textureData.h

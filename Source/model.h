@@ -1,17 +1,20 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-//#include "Include.h"
 #include "mesh.h"
-//#include "shader.h"
 #include "UniformList.h"
+#include "BfshadingEffect.h"
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <map>
-#include <vector>
+#include "../Include/GLM/glm/glm.hpp"
+#include "../Include/GLM/glm/gtx/transform.hpp"
+#include "../Include/GLM/glm/gtx/quaternion.hpp"
+#include "../Include/assimp/Importer.hpp"
+#include "../Include/assimp/cimport.h"
+#include "../Include/assimp/scene.h"
+#include "../Include/assimp/postprocess.h"
+//#include "../Include/STB/stb_image.h"
+
+
 using namespace std;
 
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
@@ -24,13 +27,24 @@ public:
 	vector<Mesh> meshes;
 	string directory;
 	bool gammaCorrection;
+    GLuint tex_normal_map;
+    glm::vec3 _position;
+    glm::quat _quaternion;
+    glm::vec3 _scale;
 
 	/*  Functions   */
 	// constructor, expects a filepath to a 3D model.
-	/*Model(string const &path, bool gamma = false) : gammaCorrection(gamma)
-	{
+	Model(string const &path, glm::vec3 position, glm::quat quaternion, glm::vec3 scale)
+    {
+        this->_position = position;
+        this->_quaternion = quaternion;
+        this->_scale = scale;
+        
+        directory = path.substr(0, path.find_last_of('/'));
+        //tex_normal_map = TextureFromFile("lost_empire-RGBA.png", this->directory);
 		loadModel(path);
-	}*/
+        
+	}
 
 	void loadmodel(string const &path, bool gamma = false) 
 	{
@@ -38,11 +52,89 @@ public:
 	}
 
 	// draws the model, and thus all its meshes
-	void Draw(UniformList uniform)
+	/*void Draw(Shader shader)
 	{
 		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i].Draw(shader, uniform);
-	}
+			meshes[i].Draw(shader, tex_normal_map);
+	}*/
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix,
+              glm::mat4 light_vp_matrix,
+              BfShadingEffect bfshading_effect){
+        /*
+         * Should invoke glUseProgram before calling this function.
+         * Use this function to draw a model with environment mapping, shadow and BF lighting.
+         */
+        glm::mat4 model = getModelMatrix();
+        glm::mat4 light_mvp_matrix = light_vp_matrix * model;
+        glUniformMatrix4fv(uniform_list.render.model_matrix, 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(uniform_list.render.view_matrix, 1, GL_FALSE, &view_matrix[0][0]);
+        glUniformMatrix4fv(uniform_list.render.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+        glUniformMatrix4fv(uniform_list.render.light_mvp_matrix, 1, GL_FALSE, &light_mvp_matrix[0][0]);
+        glUniform1i(uniform_list.render.is_shadow, bfshading_effect.shadow);
+        glUniform1i(uniform_list.render.is_normal_map, bfshading_effect.normal_map);
+        glUniform1i(uniform_list.render.is_ssao, bfshading_effect.ssao);
+        
+        for(int i = 0; i < meshes.size(); i++){
+            /*glActiveTexture(GL_TEXTURE3);
+             glBindTexture(GL_TEXTURE_2D, _meshes_texture_ids[i]);
+             glUniform1i(uniform_list.render.tex, 3);*/
+            meshes[i].draw(uniform_list.render.program_id);
+        }
+    }
+    void draw(UniformList uniform_list,
+              glm::mat4 light_vp_matrix){
+        glm::mat4 model = getModelMatrix();   // Assign uniforms
+        glUniformMatrix4fv(uniform_list.depth.mvp, 1, GL_FALSE, value_ptr(light_vp_matrix * model));
+        
+        for(int i = 0; i < meshes.size(); i++){
+            meshes[i].draw();
+        }
+    }
+    // For ssao
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix){
+        glm::mat4 model = getModelMatrix();
+        glm::mat4 mv_matrix = view_matrix * model;
+        
+        glUniformMatrix4fv(uniform_list.depth_normal.mv_matrix, 1, GL_FALSE, &mv_matrix[0][0]);
+        glUniformMatrix4fv(uniform_list.depth_normal.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+        
+        for(int i = 0; i < meshes.size(); i++){
+            meshes[i].draw();
+        }
+    }
+    
+    void addPosition(glm::vec3 position){
+        this->_position += position;
+    }
+    void setPosition(glm::vec3 position){
+        this->_position = position;
+    }
+    void addQuaternion(glm::quat quaternion){
+        this->_quaternion = this->_quaternion * quaternion;
+    }
+    void setQuaternion(glm::quat quaternion){
+        this->_quaternion = quaternion;
+    }
+    void addScale(glm::vec3 scale){
+        this->_scale += scale;
+    }
+    void setScale(glm::vec3 scale){
+        this->_scale = scale;
+    }
+    glm::mat4 getModelMatrix() {
+        // Translation matrix
+        glm::mat4 translation_matrix = glm::translate(glm::mat4(), _position);
+        // Rotation matrix
+        glm::mat4 rotation_matrix = glm::toMat4(_quaternion);
+        // Scale matrix
+        glm::mat4 scale_matrix = glm::scale(_scale);
+        
+        return translation_matrix * rotation_matrix * scale_matrix;
+    }
 
 private:
 	/*  Functions   */
@@ -59,7 +151,7 @@ private:
 			return;
 		}
 		// retrieve the directory path of the filepath
-		directory = path.substr(0, path.find_last_of('/'));
+		//directory = path.substr(0, path.find_last_of('/'));
 
 		// process ASSIMP's root node recursively
 		processNode(scene->mRootNode, scene);
@@ -195,7 +287,11 @@ private:
 			if (!skip)
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
-				texture.id = TextureFromFile(str.C_Str(), this->directory);
+                if (typeName == "texture_normal"){
+                    texture.id = tex_normal_map;
+                }
+				else
+                    texture.id = TextureFromFile(str.C_Str(), this->directory);
 				texture.type = typeName;
 				texture.path = str.C_Str();
 				textures.push_back(texture);
@@ -219,6 +315,7 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{
+        printf("load:%s\n", filename.c_str());
 		GLenum format;
 		if (nrComponents == 1)
 			format = GL_RED;
@@ -242,6 +339,7 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
 	else
 	{
 		std::cout << "Texture failed to load at path: " << path << std::endl;
+        printf("FAILED LOAD:%s\n", filename.c_str());
 		stbi_image_free(data);
 	}
 

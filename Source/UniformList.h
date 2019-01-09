@@ -35,6 +35,8 @@ struct UniformList
         GLint tex;
         GLint tex_ssao;
         GLint tex_normal_map;
+        
+        GLuint program_id;
     } render;
     struct
     {
