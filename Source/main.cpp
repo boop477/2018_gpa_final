@@ -59,6 +59,7 @@ CubeMap* cube_map;           // Skymap
 Model* mesh;                 // Scene
 Fbximport zombie_1;            // Our SUPER CUTE zombie
 Fbximport* zombie = nullptr;
+Fbximport boy;
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -175,8 +176,7 @@ void My_Init(){
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
-    // glm::vec3(17.200029, 1.100000, -1.500000); Zombie stays in hallway
-    // glm::vec3(3.199999, 1.100000, -1.500000); Zimbie stands behind the status
+
     /*zombie.loadmodel("zombie_walk.FBX", // Zomvie stans on the left
                      glm::vec3(3.199999, 1.100000, -1.500000),
                      glm::quat(glm::vec3(radians(-90.0), radians(0.0), radians(0.0))),
@@ -188,6 +188,11 @@ void My_Init(){
                      glm::quat(glm::vec3(-0.087267, -1.745329, 0.000000)),
                      glm::vec3(0.01, 0.01, 0.01),
                      "zombie_police");
+    boy.loadmodel("Running.fbx",
+                  glm::vec3(-7.133575, 0.076441, -0.014676), //-3.833578 0.076441 -0.014676
+                  glm::quat(glm::vec3(0.174533, 1.483530, 0.349066)), // 0.174533 1.483530 0.349066
+                  glm::vec3(0.01, 0.01, 0.01),
+                  "boy");
     set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
     // __ END __ //
     
@@ -245,6 +250,7 @@ void My_Display(){
     shadow_fbo->beforeDraw();
     mesh->draw(uniforms, light_vp_matrix);
     zombie_1.draw(uniforms, light_vp_matrix, timer_cnt);
+    boy.draw(uniforms, light_vp_matrix, timer_cnt);
     //quad->draw(uniforms, light_vp_matrix);
     shadow_fbo->afterDraw(viewport_size.width, viewport_size.height);
     
@@ -254,6 +260,7 @@ void My_Display(){
     glUseProgram(depth_normal_prog);
     mesh->draw(uniforms, camera.getView(), camera.getProjection());
     zombie_1.draw(uniforms, camera.getView(), camera.getProjection(), timer_cnt);
+    boy.draw(uniforms, camera.getView(), camera.getProjection(), timer_cnt);
     g_buffer->afterDraw();
     
     // SSao
@@ -309,6 +316,7 @@ void My_Display(){
     // draw mesh
     mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
     zombie_1.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
+    boy.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
     
     s_b->afterDrawSkyboxModel();
     
@@ -378,7 +386,7 @@ void My_Reshape(int width, int height){
     proj_matrix = camera.getProjection();
 }
 
-void My_Timer(int val){
+void _My_Timer(int val){
     static float n=0.0f;
     static point p_old;
     timer_cnt++;
@@ -419,8 +427,50 @@ void My_Timer(int val){
     
     //if (timer_enabled)
     //{
-    glutTimerFunc(timer_speed, My_Timer, val);
+    //glutTimerFunc(timer_speed, My_Timer, val);
     //}
+}
+
+void My_Timer(int val)
+{
+    static point p_old;
+    static float n=0.0f;
+    static bool turn_switch=false;
+    glutPostRedisplay();
+    
+    //bezier curve
+    point a = { 0, 0 };
+    point b = { -2.499997, -4.199998 };
+    point c = { -6.499997, -4.799998 };
+    point d = { -9.899995, -1.1 };
+    point p;
+    
+    if(!turn_switch){
+        n+=1.0f;
+        if(n>=1000.0f){
+            turn_switch=!turn_switch;
+            //            for(float i=0.0f;i<=180.0f;i++)
+            //                camera_rotate+=1;
+        }
+        //cout << "camera" << camera_rotate<<endl;
+    }
+    if(turn_switch){
+        n-=1.0f;
+        if(n<=0.0f){
+            turn_switch=!turn_switch;
+            //            for(float i=0.0f;i<=180.0f;i++)
+            //                camera_rotate-=1;
+        }
+    }
+    float t = static_cast<float>(n)/999.0;
+    bezier(p,a,b,c,d,t);
+    zombie_1._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
+    zombie_1.addPosition(zombie_1._position_add); // Update model matrix
+    p_old.x = p.x;
+    p_old.y = p.y;
+    //bezier curve over
+    
+    glutTimerFunc(timer_speed, My_Timer, val);
 }
 void My_PassiveMousePosition(int x, int y) {
     //glUniform2f(u_mouse_pos, float(x)/screenView.x, (screenView.y - float(y))/screenView.y);
@@ -431,7 +481,7 @@ void My_Keyboard(unsigned char key, int x, int y)
     /*
      glm::vec3 cam_eye = glm::vec3(-10.0f, 5.0f, 0.0f);
      glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
-    zombie = &zombie_1;
+    zombie = &boy;
     float unit = 0.5;
     if (key == 'w') {
         camera.moveFront();

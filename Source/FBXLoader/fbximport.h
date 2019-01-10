@@ -126,7 +126,7 @@ public:
         glUniform1i(uniform_list.render.is_ssao, bfshading_effect.ssao);
 
 		std::vector<tinyobj::shape_t> new_shapes;
-		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 55.0f);
 
         glActiveTexture(GL_TEXTURE4);
         glUniform1i(uniform_list.render.texture_diffuse1, 4);

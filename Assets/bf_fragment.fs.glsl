@@ -51,6 +51,10 @@ void main()
 {
     // == Preprocessing == //
     vec3 texColor = texture(texture_diffuse1, fs_in.tex_cord).rgb; // lost_emrpir-RGBA.png
+    if(texture(texture_diffuse1, fs_in.tex_cord).a < 0.5)
+    {
+        discard;
+    }
     float ambient = texelFetch(tex_ssao, ivec2(gl_FragCoord.xy), 0).r; // ssao map
     vec3 normal_map = texture(texture_normal1, fs_in.tex_cord).rgb; // Normal map
     normal_map = 2.0*normal_map - vec3(1.0); // normal vector from normal map
