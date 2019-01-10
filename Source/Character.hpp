@@ -26,9 +26,11 @@ class Character{
 public:
     Character(Fbximport* model);
     void mouse_update(int mouse_x, int mouse_y, int height, int width);
+    void key_update(unsigned char key);
     
 private:
     Fbximport* _model;
+    glm::vec3 _eye_front = glm::vec3(1.0f, 0.0f, 0.0f);
 };
 
 #endif /* Character_hpp */

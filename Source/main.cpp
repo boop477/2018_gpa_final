@@ -586,6 +586,7 @@ void My_Keyboard(unsigned char key, int x, int y)
     if (zombie != nullptr){
         zombie->log();
     }
+    char_boy->key_update(key);
     
     printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
     /*printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);

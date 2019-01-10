@@ -86,6 +86,7 @@ public:
 		setupMesh(path);
         this->_position = position;
         this->_quaternion = quaternion;
+        this->_quaternion_base = quaternion;
         this->_scale = scale;
         _name = name;
 	}
@@ -213,6 +214,10 @@ public:
     void addQuaternion(glm::quat quaternion){
         this->_quaternion = this->_quaternion * quaternion;
     }
+    void addQuarternion2Base(glm::quat quaternion){
+        // Add quaternion relative to the base quaternion
+        this->_quaternion = this->_quaternion_base * quaternion;
+    }
     void setQuaternion(glm::quat quaternion){
         this->_quaternion = quaternion;
     }
@@ -235,6 +240,11 @@ public:
         
         return translation_matrix * rotation_matrix * scale_matrix;
     }
+    glm::mat4 getRotationMatrix(){
+        // Rotation matrix
+        glm::mat4 rotation_matrix = glm::toMat4(_quaternion);
+        return rotation_matrix;
+    }
     
     void log(){
         printf ("\n>> name:%s\n", _name.c_str());
@@ -245,6 +255,7 @@ public:
 private:
 	/*  Render data  */
 	unsigned int VBO, EBO;
+    glm::quat _quaternion_base; // This is for rotating the model with mouse.
 
 	/*  Functions    */
 	// initializes all the buffer objects/arrays
