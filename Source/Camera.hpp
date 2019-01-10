@@ -28,11 +28,14 @@ public:
 	void moveRight();
 	void moveUp();
 	void moveDown();
+    void key_update(unsigned char key);
     
 
 	glm::vec3 eye_pos = glm::vec3(-6.462197, 1.718549, 0.039003);//-10.0, -5.0, 0.0
 	glm::vec3 eye_front = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 eye_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    
+    bool is_activated = false;
 
 	float yaw = 90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
 	float pitch = 0.0f;

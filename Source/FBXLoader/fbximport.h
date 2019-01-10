@@ -85,8 +85,9 @@ public:
                    glm::vec3 position,
                    glm::quat quaternion,
                    glm::vec3 scale,
+                   glm::vec3 rotation,
                    std::string name,
-                   GLubyte timer_bound,
+                   GLushort timer_bound,
                    float timer_speed)
 	{
 		setupMesh(path);
@@ -94,6 +95,7 @@ public:
         this->_quaternion = quaternion;
         this->_quaternion_base = quaternion;
         this->_scale = scale;
+        this->_rotation = rotation;
         _name = name;
         timer_cnt = 0;
         this->timer_speed = timer_speed;
@@ -128,8 +130,7 @@ public:
               glm::mat4 view_matrix,
               glm::mat4 proj_matrix,
               glm::mat4 light_vp_matrix,
-              BfShadingEffect bfshading_effect,
-              GLubyte timer_cnt){
+              BfShadingEffect bfshading_effect){
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glm::mat4 model = getModelMatrix();
@@ -160,8 +161,7 @@ public:
 
     // Draw: depth map
     void draw(UniformList uniform_list,
-              glm::mat4 light_vp_matrix,
-              GLubyte timer_cnt){
+              glm::mat4 light_vp_matrix){
         glm::mat4 model = getModelMatrix();   // Assign uniforms
         glUniformMatrix4fv(uniform_list.depth.mvp, 1, GL_FALSE, value_ptr(light_vp_matrix * model));
         
@@ -188,8 +188,7 @@ public:
     // For ssao
     void draw(UniformList uniform_list,
               glm::mat4 view_matrix,
-              glm::mat4 proj_matrix,
-              GLubyte timer_cnt){
+              glm::mat4 proj_matrix){
         glm::mat4 model = getModelMatrix();
         glm::mat4 mv_matrix = view_matrix * model;
         
@@ -235,6 +234,9 @@ public:
     }
     void setRotation(glm::vec3 rotation){
         this->_rotation = rotation;
+    }
+    void addRotation(glm::vec3 rotation){
+        this->_rotation += rotation;
     }
     void addScale(glm::vec3 scale){
         this->_scale += scale;
