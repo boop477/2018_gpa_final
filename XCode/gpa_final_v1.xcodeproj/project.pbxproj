@@ -21,7 +21,6 @@
 		AA3F708821E63955000CFA51 /* libIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708521E63955000CFA51 /* libIL.dylib */; };
 		AA3F708A21E63974000CFA51 /* libfbxsdk.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3F708921E63974000CFA51 /* libfbxsdk.dylib */; };
 		AA3F70A321E661D1000CFA51 /* CubeMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3F70A221E661D1000CFA51 /* CubeMap.cpp */; };
-		AA52E38021C9689000D48AAF /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA52E37E21C9689000D48AAF /* Quad.cpp */; };
 		AA66F58B21D3C90E00E901CE /* Snoobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA66F58921D3C90E00E901CE /* Snoobj.cpp */; };
 		AA80B0D921D3DCD9007EF7E9 /* Sb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA80B0D721D3DCD9007EF7E9 /* Sb.cpp */; };
 		AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00221E3A89800842FDB /* Gbuffer.cpp */; };
@@ -66,6 +65,7 @@
 		AA127AFE21CE30C5007BF551 /* Sobj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Sobj.hpp; path = ../Source/Sobj.hpp; sourceTree = "<group>"; };
 		AA13D3C821CA2B3F009AC6C0 /* depth_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_vertex.vs.glsl; path = ../Assets/depth_vertex.vs.glsl; sourceTree = "<group>"; };
 		AA13D3C921CA2B40009AC6C0 /* depth_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = depth_fragment.fs.glsl; path = ../Assets/depth_fragment.fs.glsl; sourceTree = "<group>"; };
+		AA38852C21E71F2000CF635F /* Bezier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bezier.h; path = ../Source/Bezier.h; sourceTree = "<group>"; };
 		AA3B8BB521C4DC5800DEEDEA /* skybox_fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = skybox_fragment.fs.glsl; path = ../Assets/skybox_fragment.fs.glsl; sourceTree = "<group>"; };
 		AA3B8BB621C4DC5800DEEDEA /* skybox_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = skybox_vertex.vs.glsl; path = ../Assets/skybox_vertex.vs.glsl; sourceTree = "<group>"; };
 		AA3F707D21E63718000CFA51 /* fbximport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fbximport.h; path = ../Source/FBXLoader/fbximport.h; sourceTree = "<group>"; };
@@ -80,8 +80,6 @@
 		AA3F70A021E65D4A000CFA51 /* fragment.fs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fragment.fs.glsl; path = ../Assets/fragment.fs.glsl; sourceTree = "<group>"; };
 		AA3F70A121E661D0000CFA51 /* CubeMap.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CubeMap.hpp; path = ../Source/CubeMap.hpp; sourceTree = "<group>"; };
 		AA3F70A221E661D1000CFA51 /* CubeMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeMap.cpp; path = ../Source/CubeMap.cpp; sourceTree = "<group>"; };
-		AA52E37E21C9689000D48AAF /* Quad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Quad.cpp; path = ../Source/Quad.cpp; sourceTree = "<group>"; };
-		AA52E37F21C9689000D48AAF /* Quad.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Quad.hpp; path = ../Source/Quad.hpp; sourceTree = "<group>"; };
 		AA66F58921D3C90E00E901CE /* Snoobj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Snoobj.cpp; path = ../Source/Snoobj.cpp; sourceTree = "<group>"; };
 		AA66F58A21D3C90E00E901CE /* Snoobj.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Snoobj.hpp; path = ../Source/Snoobj.hpp; sourceTree = "<group>"; };
 		AA80B0D721D3DCD9007EF7E9 /* Sb.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Sb.cpp; path = ../Source/Sb.cpp; sourceTree = "<group>"; };
@@ -130,16 +128,9 @@
 				AA7B547D21D694240041A6B5 /* Fbos */,
 				AABAE57B21D5A3EF006F7199 /* Shaders */,
 				AA66F58821D3C8BC00E901CE /* Helpers */,
-				AA52E37E21C9689000D48AAF /* Quad.cpp */,
-				AA52E37F21C9689000D48AAF /* Quad.hpp */,
+				AA38852B21E71E5600CF635F /* Models */,
 				AA001CA821E25D7200155D0C /* Camera.cpp */,
 				AA001CA521E25D7100155D0C /* Camera.hpp */,
-				AA3F70A221E661D1000CFA51 /* CubeMap.cpp */,
-				AA3F70A121E661D0000CFA51 /* CubeMap.hpp */,
-				AAB4D00821E3AF9500842FDB /* Ssao.cpp */,
-				AAB4D00921E3AF9500842FDB /* Ssao.hpp */,
-				AADE7D5321E5F1AC00F50D3F /* mesh.h */,
-				AADE7D5421E5F1AC00F50D3F /* model.h */,
 				4D28D4B91CE8B00B006CC5D4 /* GLUT.framework */,
 				4D28D4BA1CE8B00B006CC5D4 /* OpenGL.framework */,
 				4D28D4B71CE8AF45006CC5D4 /* main.cpp */,
@@ -170,6 +161,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		AA38852B21E71E5600CF635F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA3F70A221E661D1000CFA51 /* CubeMap.cpp */,
+				AA3F70A121E661D0000CFA51 /* CubeMap.hpp */,
+				AAB4D00821E3AF9500842FDB /* Ssao.cpp */,
+				AAB4D00921E3AF9500842FDB /* Ssao.hpp */,
+				AADE7D5321E5F1AC00F50D3F /* mesh.h */,
+				AADE7D5421E5F1AC00F50D3F /* model.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		AA3C1BF721E6284700C687B3 /* Fbx */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,6 +195,7 @@
 				AA10DC0E21C8F36700D17F23 /* NotImplementedError.h */,
 				AA10DC0A21C8DDD400D17F23 /* Helper.h */,
 				AAF4D4E521E476F700FFA144 /* BfshadingEffect.h */,
+				AA38852C21E71F2000CF635F /* Bezier.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -293,7 +298,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA52E38021C9689000D48AAF /* Quad.cpp in Sources */,
 				AA3F708021E63719000CFA51 /* fbxloader.cpp in Sources */,
 				AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */,
 				AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */,

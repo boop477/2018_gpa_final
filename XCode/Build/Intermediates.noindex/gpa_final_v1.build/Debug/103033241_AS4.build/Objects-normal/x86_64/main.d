@@ -89,10 +89,9 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Helper.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/UniformList.h \
   /Users/softcat/ComputerGraphics/gpa_final/Source/CubeMap.hpp \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/Quad.hpp \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/ShadowFbo.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/transform.inl \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/ShadowFbo.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Sobj.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Snoobj.hpp \
   /Users/softcat/ComputerGraphics/gpa_final/Source/Sb.hpp \
@@ -351,4 +350,5 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Include/fbxsdk/fbxsdk/utils/fbxrenamingstrategyutilities.h \
   /Users/softcat/ComputerGraphics/gpa_final/Include/fbxsdk/fbxsdk/utils/fbxrootnodeutility.h \
   /Users/softcat/ComputerGraphics/gpa_final/Include/fbxsdk/fbxsdk/utils/fbxusernotification.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Include/devil/IL/il.h
+  /Users/softcat/ComputerGraphics/gpa_final/Include/devil/IL/il.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Bezier.h
