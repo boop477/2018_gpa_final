@@ -303,7 +303,7 @@ void My_Display(){
     glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
     glUniform1i(uniforms.skybox.tex_cubemap, 2);
     
-    //cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
+    cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
     
     // - Draw the model - //
     
