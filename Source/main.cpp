@@ -58,7 +58,7 @@ CubeMap* cube_map;           // Skymap
 //Quad* quad;                  // Quad
 Model* mesh;                 // Scene
 Fbximport zombie_1;            // Our SUPER CUTE zombie
-Fbximport zombie;
+Fbximport* zombie = nullptr;
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -177,13 +177,14 @@ void My_Init(){
                      glm::vec3(0.15, 0.15, 0.15));
     // glm::vec3(17.200029, 1.100000, -1.500000); Zombie stays in hallway
     // glm::vec3(3.199999, 1.100000, -1.500000); Zimbie stands behind the status
-    zombie.loadmodel("zombie_walk.FBX", // Zomvie stans on the left
+    /*zombie.loadmodel("zombie_walk.FBX", // Zomvie stans on the left
                      glm::vec3(3.199999, 1.100000, -1.500000),
                      glm::quat(glm::vec3(radians(-90.0), radians(0.0), radians(0.0))),
                      glm::vec3(0.10, 0.10, 0.10),
-                     "zombie_baseline");
+                     "zombie_baseline");*/
     zombie_1.loadmodel("zombie_walk_1.fbx",
-                     glm::vec3(-2.533580, -0.023559, -0.21467),
+                     //glm::vec3(-2.533580, -0.023559, -0.21467),
+                       glm::vec3(4.866417, -0.023559, -0.214670),
                      glm::quat(glm::vec3(-0.087267, -1.745329, 0.000000)),
                      glm::vec3(0.01, 0.01, 0.01),
                      "zombie_police");
@@ -384,21 +385,32 @@ void My_Timer(int val){
     glutPostRedisplay();
     
     //bezier curve
-    point a = { 0.0, 0.0};
+    /*point a = { 0.0, 0.0};
     point b = { -3.2, 0.0 };
     point c = { -3.2, 4.6 };
-    point d = { 0.0, 4.6 };
+    point d = { 0.0, 4.6 };*/
+    
+    /*point a = { 0.0, 0.0};
+    point b = { -2.499997, -4.199998 };
+    point c = { -6.499997, -4.799998 };
+    point d = { -9.899995, -1.1 };*/
+    
+    point a = { 0.0, 0.0};
+    point b = { -2.499997, -1.9 };
+    point c = { -2.199998, 0.6 };
+    point d = { 0.0, 0.0};
+    
     point p;
     
     if(n<1000.0f)
         n+=1.0f;
     if(n>=1000.0f)
         n=0;
-    float t = static_cast<float>(n)/1024.0;
+    float t = static_cast<float>(n)/500.0;
     //printf("%f \n", t);
-    //bezier(p,a,b,c,d,t);
-    //zombie_1._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
-    //zombie_1.addPosition(zombie._position_add); // Update model matrix
+    bezier(p,a,b,c,d,t);
+    zombie_1._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
+    zombie_1.addPosition(zombie_1._position_add); // Update model matrix
     //printf("%f %f\n", p.x, p.y);
     p_old.x = p.x;
     p_old.y = p.y;
@@ -419,6 +431,7 @@ void My_Keyboard(unsigned char key, int x, int y)
     /*
      glm::vec3 cam_eye = glm::vec3(-10.0f, 5.0f, 0.0f);
      glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
+    zombie = &zombie_1;
     float unit = 0.5;
     if (key == 'w') {
         camera.moveFront();
@@ -443,68 +456,84 @@ void My_Keyboard(unsigned char key, int x, int y)
     }  // Position
     else if(key == 'f'){
         add_pos = glm::vec3(0.1, 0.0, 0.0);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     }
     else if(key == 'v'){
         add_pos = glm::vec3(-0.1, 0.0, 0.0);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     }
     else if(key == 'g'){
         add_pos = glm::vec3(0.0, 0.1, 0.0);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     }
     else if(key == 'b'){
         add_pos = glm::vec3(0.0, -0.1, 0.0);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     }
     else if(key == 'h'){
         add_pos = glm::vec3(0.0, 0.0, 0.1);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     }
     else if(key == 'n'){
         add_pos = glm::vec3(0.0, 0.0, -0.1);
-        zombie.addPosition(add_pos);
+        if (zombie != nullptr)
+            zombie->addPosition(add_pos);
     } // ROtation
     else if(key == 'j'){
         set_quat += glm::vec3(glm::radians(5.0), 0.0, 0.0);
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     }
     else if(key == 'm'){
         set_quat += glm::vec3(glm::radians(-5.0), 0.0, 0.0);
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     }
     else if(key == 'k'){
         set_quat += glm::vec3(0.0, glm::radians(5.0), 0.0);
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     }
     else if(key == ','){
         set_quat += glm::vec3(0.0, glm::radians(-5.0), 0.0);
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     }
     else if(key == 'l'){
         set_quat += glm::vec3(0.0, 0.0, glm::radians(5.0));
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     }
     else if(key == '.'){
         set_quat += glm::vec3(0.0, 0.0, glm::radians(-5.0));
-        zombie.setQuaternion(glm::quat(set_quat));
-        zombie.setRotation(set_quat);
+        if (zombie != nullptr){
+            zombie->setQuaternion(glm::quat(set_quat));
+            zombie->setRotation(set_quat);}
     } // Scale
     else if(key == 'r'){
-        zombie.addScale(glm::vec3(0.1, 0.1, 0.1));
+        if (zombie != nullptr)
+            zombie->addScale(glm::vec3(0.1, 0.1, 0.1));
     }
     else if(key == 't'){
-        zombie.addScale(glm::vec3(-0.1, -0.1, -0.1));
+        if (zombie != nullptr)
+            zombie->addScale(glm::vec3(-0.1, -0.1, -0.1));
     }
     
+    if (zombie != nullptr){
+        zombie->log();
+    }
     
-    
-    zombie.log();
+    printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
     /*printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
     printf ("zombie quat: %f %f %f\n", set_quat.x, set_quat.y, set_quat.z);
     printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);*/
