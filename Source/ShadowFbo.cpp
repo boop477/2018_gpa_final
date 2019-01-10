@@ -61,8 +61,9 @@ void ShadowFbo::beforeDraw(){
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(4.0f, 4.0f);
 }
-void ShadowFbo::afterDraw(){
+void ShadowFbo::afterDraw(int width, int height){
     glDisable(GL_POLYGON_OFFSET_FILL);
+    glViewport(0, 0, width, height);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 void ShadowFbo::log(){

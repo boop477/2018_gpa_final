@@ -9,9 +9,9 @@
  */
 #version 410 core
 
-uniform sampler2D tex_sobj;
+/*uniform sampler2D tex_sobj;
 uniform sampler2D tex_snoobj;
-uniform sampler2D tex_sb;
+uniform sampler2D tex_sb;*/
 uniform sampler2D tex;
 uniform int is_using_df;
 
@@ -25,13 +25,14 @@ in VS_OUT
 void main()
 {
     // color = Sb + (sobj - snoobj)
-    vec4 c_sobj = texture(tex_sobj, fs_in.texcoord);
-    vec4 c_snoobj = texture(tex_snoobj, fs_in.texcoord);
-    vec4 c_sb = texture(tex_sb, fs_in.texcoord);
+    //vec4 c_sobj = texture(tex_sobj, fs_in.texcoord);
+    //vec4 c_snoobj = texture(tex_snoobj, fs_in.texcoord);
+    //vec4 c_sb = texture(tex_sb, fs_in.texcoord);
     vec4 c_single_texture = texture(tex, fs_in.texcoord);
     
-    if (is_using_df == 1)
-        color = c_sb + (c_sobj-c_snoobj);
-    else
-        color = c_single_texture;
+    //if (is_using_df == 1)
+    //    color = c_sb + (c_sobj-c_snoobj);
+    //else
+    //    color = c_single_texture;
+    color = c_single_texture;
 }

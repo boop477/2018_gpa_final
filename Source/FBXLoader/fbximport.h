@@ -68,16 +68,19 @@ public:
     glm::vec3 _position_add; // This is for moving in(?) bezier curve. REMEMBER TO add this var to _position everytime before getModelMatrix()
     glm::quat _quaternion;
     glm::vec3 _scale;
+    glm::vec3 _rotation;
+    std::string _name;
 
 	
 	/*  Functions  */
 	// constructor
-	void loadmodel(string const &path, glm::vec3 position, glm::quat quaternion, glm::vec3 scale)
+    void loadmodel(string const &path, glm::vec3 position, glm::quat quaternion, glm::vec3 scale, std::string name)
 	{
 		setupMesh(path);
         this->_position = position;
         this->_quaternion = quaternion;
         this->_scale = scale;
+        _name = name;
 	}
     
     void loadmodel(string const &path, bool gamma = false)
@@ -123,7 +126,7 @@ public:
         glUniform1i(uniform_list.render.is_ssao, bfshading_effect.ssao);
 
 		std::vector<tinyobj::shape_t> new_shapes;
-		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 55.0f);
 
         glActiveTexture(GL_TEXTURE4);
         glUniform1i(uniform_list.render.texture_diffuse1, 4);
@@ -138,6 +141,62 @@ public:
         glActiveTexture(GL_TEXTURE0);
 	}
 
+    // Draw: depth map
+    void draw(UniformList uniform_list,
+              glm::mat4 light_vp_matrix,
+              GLubyte timer_cnt){
+        glm::mat4 model = getModelMatrix();   // Assign uniforms
+        glUniformMatrix4fv(uniform_list.depth.mvp, 1, GL_FALSE, value_ptr(light_vp_matrix * model));
+        
+        /*for(int i = 0; i < meshes.size(); i++){
+            meshes[i].draw();
+        }*/
+        
+        std::vector<tinyobj::shape_t> new_shapes;
+        GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+        
+        //glActiveTexture(GL_TEXTURE4);
+        //glUniform1i(uniform_list.render.texture_diffuse1, 4);
+        for (unsigned int i = 0; i < characterShapes.size(); i++)
+        {
+            glBindVertexArray(characterShapes[i].vao);
+            glBindBuffer(GL_ARRAY_BUFFER, characterShapes[i].vbo);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, new_shapes[i].mesh.positions.size() * sizeof(float), new_shapes[i].mesh.positions.data());
+            //glBindTexture(GL_TEXTURE_2D, characterMaterials[characterShapes[i].materialId].texId);
+            glDrawElements(GL_TRIANGLES, characterShapes[i].indexCount, GL_UNSIGNED_INT, 0);
+        }
+        //glActiveTexture(GL_TEXTURE0);
+        
+    }
+    // For ssao
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix,
+              GLubyte timer_cnt){
+        glm::mat4 model = getModelMatrix();
+        glm::mat4 mv_matrix = view_matrix * model;
+        
+        glUniformMatrix4fv(uniform_list.depth_normal.mv_matrix, 1, GL_FALSE, &mv_matrix[0][0]);
+        glUniformMatrix4fv(uniform_list.depth_normal.proj_matrix, 1, GL_FALSE, &proj_matrix[0][0]);
+        
+        /*for(int i = 0; i < meshes.size(); i++){
+            meshes[i].draw();
+        }*/
+        std::vector<tinyobj::shape_t> new_shapes;
+        GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+        
+        //glActiveTexture(GL_TEXTURE4);
+        //glUniform1i(uniform_list.render.texture_diffuse1, 4);
+        for (unsigned int i = 0; i < characterShapes.size(); i++)
+        {
+            glBindVertexArray(characterShapes[i].vao);
+            glBindBuffer(GL_ARRAY_BUFFER, characterShapes[i].vbo);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, new_shapes[i].mesh.positions.size() * sizeof(float), new_shapes[i].mesh.positions.data());
+            //glBindTexture(GL_TEXTURE_2D, characterMaterials[characterShapes[i].materialId].texId);
+            glDrawElements(GL_TRIANGLES, characterShapes[i].indexCount, GL_UNSIGNED_INT, 0);
+        }
+        //glActiveTexture(GL_TEXTURE0);
+    }
     void addPosition(glm::vec3 position){
         this->_position += position;
     }
@@ -149,6 +208,9 @@ public:
     }
     void setQuaternion(glm::quat quaternion){
         this->_quaternion = quaternion;
+    }
+    void setRotation(glm::vec3 rotation){
+        this->_rotation = rotation;
     }
     void addScale(glm::vec3 scale){
         this->_scale += scale;
@@ -167,6 +229,12 @@ public:
         return translation_matrix * rotation_matrix * scale_matrix;
     }
     
+    void log(){
+        printf ("\n>> name:%s\n", _name.c_str());
+        printf ("   zombie pos  : %f %f %f\n", _position.x, _position.y, _position.z);
+        printf ("   zombie quat : %f %f %f\n", _rotation.x, _rotation.y, _rotation.z);
+        printf ("   scale scale : %f %f %f\n", _scale.x, _scale.y, _scale.z);
+    }
 private:
 	/*  Render data  */
 	unsigned int VBO, EBO;
