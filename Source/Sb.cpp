@@ -44,7 +44,7 @@ void Sb::beforeDrawSkyboxModel(){
      *  2. Bind to fbo
      *  3. Clear color buffer and depth buffer
      */
-    static const GLfloat red[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    static const GLfloat red[] = { 0.2f, 0.0f, 0.0f, 1.0f };
     static const GLfloat ones[] = { 1.0f };
     
     glEnable(GL_DEPTH_TEST);

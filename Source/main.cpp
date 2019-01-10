@@ -16,6 +16,7 @@
 #include "Gbuffer.hpp"
 #include "Menu.h"
 #include "BfshadingEffect.h"
+#include "FBXLoader/fbximport.h"
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
@@ -28,6 +29,9 @@ mat4 view_matrix;
 mat4 proj_matrix;
 mat4 inv_vp_matrix;
 
+glm::vec3 add_pos = vec3(0.0);
+glm::vec3 set_quat = vec3(0.0);
+
 void My_Reshape(int width, int height);
 
 using namespace glm;
@@ -35,7 +39,6 @@ using namespace std;
 
 GLuint depth_prog;           // Program to get a depth map
 GLuint bf_render_prog;          // Program to draw a model/a quad with env_map, shadow ahd BF lighting
-GLuint tex_render_prog;
 GLuint skybox_prog;          // Program to draw a skybox
 GLuint fbo2screen_prog;      // Program to draw a rbo to screen
 GLuint depth_normal_prog;    // Program that should run before ssao_prog
@@ -50,11 +53,10 @@ MaxRangeInt* fb2screen_flag; // A flag to tell fb2screen_prog that what texture 
 ViewportSize viewport_size;  // A struct to save (width, height). This will be used in fbo.reshape(...)
 Camera camera = Camera();
 
-//Mesh* mesh;                  // Model
 CubeMap* cube_map;           // Skymap
 Quad* quad;                  // Quad
-Model* mesh;
-//Model mesh = Model();
+Model* mesh;                 // Scene
+Fbximport zombie;            // Our SUPER CUTE zombie
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -77,7 +79,7 @@ void My_Init(){
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     
-    // Program to draw fbo to screen
+    // == Program to draw fbo to screen == //
     fbo2screen_prog = createProgram("df_vertex.vs.glsl", "df_fragment.fs.glsl", "fbo2screen");
     glUseProgram(fbo2screen_prog);
     uniforms.fbo2screen.tex_sobj = glGetUniformLocation(fbo2screen_prog, "tex_sobj");
@@ -85,14 +87,16 @@ void My_Init(){
     uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");
     uniforms.fbo2screen.is_using_df = glGetUniformLocation(fbo2screen_prog, "is_using_df");
     uniforms.fbo2screen.tex = glGetUniformLocation(fbo2screen_prog, "tex");
+    // __ END __ //
     
-    // Program to draw ssao->depth+normal map
+    // == Program to draw ssao->depth+normal map == //
     depth_normal_prog = createProgram("depth_normal_vertex.vs.glsl", "depth_normal_fragment.fs.glsl", "depth_normal");
     glUseProgram(fbo2screen_prog);
     uniforms.depth_normal.mv_matrix = glGetUniformLocation(depth_normal_prog, "mv_matrix");
     uniforms.depth_normal.proj_matrix = glGetUniformLocation(depth_normal_prog, "proj_matrix");
+    // __ END __ //
     
-    // Program to draw ssao
+    // == Program to draw ssao == //
     ssao_prog = createProgram("ssao_vertex.vs.glsl", "ssao_fragment.fs.glsl", "ssao program");
     glUseProgram(ssao_prog);
     uniforms.ssao.normal_map = glGetUniformLocation(ssao_prog, "normal_map");
@@ -100,39 +104,23 @@ void My_Init(){
     uniforms.ssao.proj = glGetUniformLocation(ssao_prog, "proj");
     uniforms.ssao.noise_map = glGetUniformLocation(ssao_prog, "noise_map");
     uniforms.ssao.noise_scale = glGetUniformLocation(ssao_prog, "noise_scale");
+    // __ END __ //
     
-    // Program to draw the depth map
+    // == Program to draw the depth map == //
     depth_prog = createProgram("depth_vertex.vs.glsl", "depth_fragment.fs.glsl", "depth");
     uniforms.depth.mvp = glGetUniformLocation(depth_prog, "mvp");
+    // __ END __ //
     
-    // Program to draw the skybox
+    // == Program to draw the skybox == //
     skybox_prog = createProgram("skybox_vertex.vs.glsl", "skybox_fragment.fs.glsl", "skybox");
     glUseProgram(skybox_prog);
     
     uniforms.skybox.view_matrix = glGetUniformLocation(skybox_prog, "view_matrix");
     uniforms.skybox.inv_vp_matrix = glGetUniformLocation(skybox_prog, "inv_vp_matrix");
     uniforms.skybox.tex_cubemap = glGetUniformLocation(skybox_prog, "tex_cubemap");
+    // __ END __ //
     
-    // Program to draw the model with diffuse map
-    tex_render_prog = createProgram("tex_vertex.vs.glsl", "tex_fragment.fs.glsl", "tex_render");
-    glUseProgram(tex_render_prog);
-    
-    /*uniforms.tex_render.mv_matrix = glGetUniformLocation(tex_render_prog, "mv_matrix");
-    uniforms.tex_render.model_matrix = glGetUniformLocation(tex_render_prog, "model_matrix");
-    uniforms.tex_render.view_matrix = glGetUniformLocation(tex_render_prog, "view_matrix");
-    uniforms.tex_render.proj_matrix = glGetUniformLocation(tex_render_prog, "proj_matrix");
-    uniforms.tex_render.is_quad = glGetUniformLocation(tex_render_prog, "is_quad");
-    uniforms.tex_render.light_mvp_matrix = glGetUniformLocation(tex_render_prog, "light_mvp_matrix");
-    uniforms.tex_render.tex_cubemap = glGetUniformLocation(tex_render_prog, "tex_cubemap");
-    uniforms.tex_render.tex_shadow = glGetUniformLocation(tex_render_prog, "tex_shadow");
-    uniforms.tex_render.is_shadow = glGetUniformLocation(tex_render_prog, "is_shadow");
-    uniforms.tex_render.tex = glGetUniformLocation(tex_render_prog, "tex");*/
-    uniforms.tex_render.model_matrix = glGetUniformLocation(tex_render_prog, "model_matrix");
-    uniforms.tex_render.view_matrix = glGetUniformLocation(tex_render_prog, "view_matrix");
-    uniforms.tex_render.proj_matrix = glGetUniformLocation(tex_render_prog, "proj_matrix");
-    uniforms.tex_render.tex = glGetUniformLocation(tex_render_prog, "tex");
-    
-    // Program to draw the model with metal texture + BF shading
+    // == Program to draw the model with metal texture + BF shading == //
     bf_render_prog = createProgram("bf_vertex.vs.glsl", "bf_fragment.fs.glsl", "bf_render");
     glUseProgram(bf_render_prog);
     
@@ -148,53 +136,66 @@ void My_Init(){
     uniforms.render.tex = glGetUniformLocation(bf_render_prog, "tex");
     uniforms.render.tex_ssao = glGetUniformLocation(bf_render_prog, "tex_ssao");
     uniforms.render.tex_normal_map = glGetUniformLocation(bf_render_prog, "tex_normal_map");
+    uniforms.render.texture_diffuse1 = glGetUniformLocation(bf_render_prog, "texture_diffuse1");
     uniforms.render.is_shadow = glGetUniformLocation(bf_render_prog, "is_shadow");
     uniforms.render.is_ssao = glGetUniformLocation(bf_render_prog, "is_ssao");
     uniforms.render.is_normal_map = glGetUniformLocation(bf_render_prog, "is_normal_map");
+    // __ END __ //
     
-    // Fbos
+    // == Fbos == //
     shadow_fbo = new ShadowFbo("Shadow buffer");
     s_obj = new Sobj("Sobj:quad+shadow-model");
     s_noobj = new Snoobj("Snoobj:quad-model");
     s_b = new Sb("Sb:model+skybox");
     g_buffer = new Gbuffer("G buffer for ssao");
     ssao_fbo = new SsaoFbo("Ssao fbo");
+    // __ END __ //
     
-    // Flag required by UI
+    // == Flag required by UI == //
     fb2screen_flag = new MaxRangeInt(4);
+    // __ END __ //
     
-    // Load ssao
+    // == Load ssao == //
     ssao_c.loadVao(ssao_prog);
     ssao_c.loadKernalUbo();
     ssao_c.loadNoiseMap();
+    // __ END __ //
     
-    // Load Skybox
+    // == Load all the drawable stuff == //
     cube_map = new CubeMap();
     tex_envmap = cube_map->loadTexture();    // We've hardcoded the texture location in this function.
     
-    // Load Ladybug
-    /*mesh = new Mesh("Nanosuit",
-                    "nanosuit.obj",
-                    vec3(-10.0, -13.0, -8.0),
-                    vec3(0.5, 0.35, 0.5),
-                    glm::quat(vec3(0.0)));*/
-    
-    // Load quad
     quad = new Quad(vec3(-20.0, -12.5, 0.0),
                     vec3(1.0, 1.0, 1.0),
                     glm::quat(vec3(0.0, 0.0, 0.0)));
     
-    //mesh.loadmodel("lost_empire/lost_empire.obj");
     mesh = new Model("Space/Space Station Scene.obj",
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
     
-    // Turn on all the effects
+    zombie.loadmodel("zombie_walk.FBX",
+                     glm::vec3(17.200029, 1.100000, -1.500000),
+                     glm::quat(glm::vec3(radians(-90.0), radians(0.0), radians(0.0))),
+                     glm::vec3(0.10, 0.10, 0.10));
+    set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
+    // __ END __ //
+    
+    // == Turn on all the effects == //
     bfshading_effect.normal_map = 1;
     bfshading_effect.shadow = 1;
     bfshading_effect.ssao = 1;
+    // __ END __ //
     
+    // == Sampler for FBC loader == //
+    GLuint sampler;
+    glGenSamplers(1, &sampler);
+    glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindSampler(0, sampler);
+    // __ END __ //
+    
+    // == LOG == //
     My_Reshape(1440, 900);
     shadow_fbo->log();
     s_obj->log();
@@ -228,7 +229,7 @@ void My_Display(){
     
     // == View and projection matrix == //
     /*view_matrix = lookAt(vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f, -1.0f, 0.0f), vec3(0.0, 1.0, 0.0));
-    inv_vp_matrix = inverse(proj_matrix * view_matrix);*/
+     inv_vp_matrix = inverse(proj_matrix * view_matrix);*/
     view_matrix = camera.getView();
     inv_vp_matrix = inverse(proj_matrix * view_matrix);
     
@@ -308,7 +309,7 @@ void My_Display(){
     glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
     glUniform1i(uniforms.skybox.tex_cubemap, 2);
     
-    cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
+    //cube_map->draw(uniforms, view_matrix, inv_vp_matrix);
     
     // - Draw the model - //
     
@@ -327,16 +328,9 @@ void My_Display(){
     glBindTexture(GL_TEXTURE_2D, ssao_fbo->texture_map);
     glUniform1i(uniforms.render.tex_ssao, 3);
     
-    /*glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, mesh->tex_ID);
-    glUniform1i(uniforms.render.tex, 3);
-    
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, mesh->tex_normal_ID);
-    glUniform1i(uniforms.render.tex_normal_map, 5);*/
-    
     // draw mesh
     mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
+    zombie.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
     
     s_b->afterDrawSkyboxModel();
     
@@ -353,16 +347,16 @@ void My_Display(){
         case MENU_ALL:
             // differential rendering
             /*glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
-            glUniform1i(uniforms.fbo2screen.tex_sb, 1);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
-            glUniform1i(uniforms.fbo2screen.tex_sobj, 2);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
-            glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
-            glUniform1i(uniforms.fbo2screen.is_using_df, 1);*/
-        
+             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
+             glUniform1i(uniforms.fbo2screen.tex_sb, 1);
+             glActiveTexture(GL_TEXTURE2);
+             glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
+             glUniform1i(uniforms.fbo2screen.tex_sobj, 2);
+             glActiveTexture(GL_TEXTURE3);
+             glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
+             glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
+             glUniform1i(uniforms.fbo2screen.is_using_df, 1);*/
+            
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
@@ -403,9 +397,9 @@ void My_Reshape(int width, int height){
     viewport_size.height = height;
     
     /*
-    glViewport(0, 0, width, height);
-    float viewportAspect = (float)width / (float)height;
-    proj_matrix = perspective(deg2rad(60.0f), viewportAspect, 0.1f, 1000.0f);*/
+     glViewport(0, 0, width, height);
+     float viewportAspect = (float)width / (float)height;
+     proj_matrix = perspective(deg2rad(60.0f), viewportAspect, 0.1f, 1000.0f);*/
     
     shadow_fbo->reshape();
     s_obj->reshape(width, height);
@@ -456,23 +450,63 @@ void My_Keyboard(unsigned char key, int x, int y)
     else if(key == 'i'){
         fb2screen_flag->add(1);
     }
-    printf("%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
+    else if(key == 'f'){
+        add_pos = glm::vec3(0.1, 0.0, 0.0);
+    }
+    else if(key == 'v'){
+        add_pos = glm::vec3(-0.1, 0.0, 0.0);
+    }
+    else if(key == 'g'){
+        add_pos = glm::vec3(0.0, 0.1, 0.0);
+    }
+    else if(key == 'b'){
+        add_pos = glm::vec3(0.0, -0.1, 0.0);
+    }
+    else if(key == 'h'){
+        add_pos = glm::vec3(0.0, 0.0, 0.1);
+    }
+    else if(key == 'n'){
+        add_pos = glm::vec3(0.0, 0.0, -0.1);
+    } // ROtation
+    else if(key == 'j'){
+        set_quat += glm::vec3(glm::radians(5.0), 0.0, 0.0);
+    }
+    else if(key == 'm'){
+        set_quat += glm::vec3(glm::radians(-5.0), 0.0, 0.0);
+    }
+    else if(key == 'k'){
+        set_quat += glm::vec3(0.0, glm::radians(5.0), 0.0);
+    }
+    else if(key == ','){
+        set_quat += glm::vec3(0.0, glm::radians(-5.0), 0.0);
+    }
+    else if(key == 'l'){
+        set_quat += glm::vec3(0.0, 0.0, glm::radians(5.0));
+    }
+    else if(key == '.'){
+        set_quat += glm::vec3(0.0, 0.0, glm::radians(-5.0));
+    }
+    zombie.addPosition(add_pos);
+    zombie.setQuaternion(glm::quat(set_quat));
+    printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
+    printf ("zombie quat: %f %f %f\n", set_quat.x, set_quat.y, set_quat.z);
+    printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
 }
 void My_SpecialKeys(int key, int x, int y){
     switch (key)
     {
         case GLUT_KEY_F1:
-        printf("F1 is pressed at (%d, %d)\n", x, y);
-        break;
+            printf("F1 is pressed at (%d, %d)\n", x, y);
+            break;
         case GLUT_KEY_PAGE_UP:
-        printf("Page up is pressed at (%d, %d)\n", x, y);
-        break;
+            printf("Page up is pressed at (%d, %d)\n", x, y);
+            break;
         case GLUT_KEY_LEFT:
-        printf("Left arrow is pressed at (%d, %d)\n", x, y);
-        break;
+            printf("Left arrow is pressed at (%d, %d)\n", x, y);
+            break;
         default:
-        printf("Other special key is pressed at (%d, %d)\n", x, y);
-        break;
+            printf("Other special key is pressed at (%d, %d)\n", x, y);
+            break;
     }
 }
 void My_Menu(int id){
@@ -493,16 +527,16 @@ void My_Menu(int id){
             break;
         case MENU_DEPTH_LIGHT:
             current_menu = MENU_DEPTH_LIGHT;;
-        break;
+            break;
         case MENU_DEPTH_EYES:
             current_menu = MENU_DEPTH_EYES;
-        break;
+            break;
         case MENU_SSAO:
             current_menu = MENU_SSAO;
-        break;
+            break;
         case MENU_ALL:
             current_menu = MENU_ALL;
-        break;
+            break;
         case MENU_NORMAL_MAP_ON :
             bfshading_effect.normal_map = 1;
             break;
@@ -538,6 +572,9 @@ int main(int argc, char *argv[]){
 #ifdef _MSC_VER
     glewInit();
 #endif
+    ilInit();
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
     dumpInfo();
     My_Init();
     
@@ -586,4 +623,3 @@ int main(int argc, char *argv[]){
     
     return 0;
 }
-

@@ -29,7 +29,7 @@ public:
 	void moveUp();
 	void moveDown();
 
-	glm::vec3 eye_pos = glm::vec3(-6.533580, 3.576440, 4.185325);//-10.0, -5.0, 0.0
+	glm::vec3 eye_pos = glm::vec3(-6.533580, 0.976441, -0.014676);//-10.0, -5.0, 0.0
 	glm::vec3 eye_front = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 eye_up = glm::vec3(0.0f, 1.0f, 0.0f);
 

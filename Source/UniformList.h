@@ -30,6 +30,7 @@ struct UniformList
         GLint is_normal_map;
         GLint is_ssao;
         
+        GLint texture_diffuse1;
         GLint tex_cubemap;
         GLint tex_shadow;
         GLint tex;
