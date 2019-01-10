@@ -304,4 +304,5 @@ dependencies: \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/norm.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/../Include/GLM/glm/gtx/quaternion.inl \
   /Users/softcat/ComputerGraphics/gpa_final/Source/FBXLoader/../UniformList.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/FBXLoader/../BfshadingEffect.h
+  /Users/softcat/ComputerGraphics/gpa_final/Source/FBXLoader/../BfshadingEffect.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/CameraChar.hpp

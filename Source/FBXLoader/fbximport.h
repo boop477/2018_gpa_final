@@ -211,6 +211,9 @@ public:
     void setPosition(glm::vec3 position){
         this->_position = position;
     }
+    glm::vec3 getPosition(){
+        return _position;
+    }
     void addQuaternion(glm::quat quaternion){
         this->_quaternion = this->_quaternion * quaternion;
     }

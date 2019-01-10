@@ -20,5 +20,7 @@
 #define MENU_NORMAL_MAP_OFF 9
 #define MENU_SHADOW_ON 10
 #define MENU_SHADOW_OFF 11
+#define MENU_CAM_THIRD 12
+#define MENU_CAM_DEBUG 13
 
 #endif /* Menu_h */
