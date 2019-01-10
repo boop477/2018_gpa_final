@@ -191,12 +191,12 @@ void My_Init(){
                        glm::vec3(4.866417, -0.023559, -0.214670),
                      glm::quat(glm::vec3(-0.087267, -1.745329, 0.000000)),
                      glm::vec3(0.01, 0.01, 0.01),
-                     "zombie_police");
-    boy.loadmodel("Running.fbx",
+                     "zombie_police", 25, 55);
+    boy.loadmodel("Idle.fbx",
                   glm::vec3(-7.133575, 0.076441, -0.014676), //-3.833578 0.076441 -0.014676
                   glm::quat(glm::vec3(0.087266, 1.570796, 0.087267)), // 0.174533 1.483530 0.349066
                   glm::vec3(0.01, 0.01, 0.01),
-                  "boy");
+                  "boy", 47, 55);
     char_boy = new Character(&boy);
     // __ END __ //
     
@@ -407,51 +407,6 @@ void My_Reshape(int width, int height){
     }
 }
 
-void _My_Timer(int val){
-    static float n=0.0f;
-    static point p_old;
-    timer_cnt++;
-    glutPostRedisplay();
-    
-    //bezier curve
-    /*point a = { 0.0, 0.0};
-    point b = { -3.2, 0.0 };
-    point c = { -3.2, 4.6 };
-    point d = { 0.0, 4.6 };*/
-    
-    /*point a = { 0.0, 0.0};
-    point b = { -2.499997, -4.199998 };
-    point c = { -6.499997, -4.799998 };
-    point d = { -9.899995, -1.1 };*/
-    
-    point a = { 0.0, 0.0};
-    point b = { -2.499997, -1.9 };
-    point c = { -2.199998, 0.6 };
-    point d = { 0.0, 0.0};
-    
-    point p;
-    
-    if(n<1000.0f)
-        n+=1.0f;
-    if(n>=1000.0f)
-        n=0;
-    float t = static_cast<float>(n)/500.0;
-    //printf("%f \n", t);
-    bezier(p,a,b,c,d,t);
-    zombie_1._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
-    zombie_1.addPosition(zombie_1._position_add); // Update model matrix
-    //printf("%f %f\n", p.x, p.y);
-    p_old.x = p.x;
-    p_old.y = p.y;
-    //bezier curve over
-    //printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
-    
-    //if (timer_enabled)
-    //{
-    //glutTimerFunc(timer_speed, My_Timer, val);
-    //}
-}
-
 void My_Timer(int val)
 {
     static point p_old;
@@ -460,6 +415,10 @@ void My_Timer(int val)
     static bool animation = false;
     static float rot_deg = 0.0;
     static float rot_scale = 2.5;
+    
+    timer_cnt++;
+    boy.updateTimer();
+    
     glutPostRedisplay();
     
     //bezier curve
@@ -524,7 +483,7 @@ void My_Keyboard(unsigned char key, int x, int y)
     /*
      glm::vec3 cam_eye = glm::vec3(-10.0f, 5.0f, 0.0f);
      glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);*/
-    zombie = &boy;
+    zombie = nullptr;
     float unit = 0.5;
     if (key == 'w') {
         camera.moveFront();

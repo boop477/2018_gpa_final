@@ -50,6 +50,7 @@ void GetFbxAnimation(fbx_handles &handles, std::vector<tinyobj::shape_t> &shapes
 {
     if (handles.lScene != 0)
     {
+        float olf = frame;
         frame = min(max(frame, 0.0f), 1.0f);
         FbxTimeSpan lTimeLineTimeSpan;
         handles.lScene->GetGlobalSettings().GetTimelineDefaultTimeSpan(lTimeLineTimeSpan);

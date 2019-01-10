@@ -81,7 +81,13 @@ public:
 	
 	/*  Functions  */
 	// constructor
-    void loadmodel(string const &path, glm::vec3 position, glm::quat quaternion, glm::vec3 scale, std::string name)
+    void loadmodel(string const &path,
+                   glm::vec3 position,
+                   glm::quat quaternion,
+                   glm::vec3 scale,
+                   std::string name,
+                   GLubyte timer_bound,
+                   float timer_speed)
 	{
 		setupMesh(path);
         this->_position = position;
@@ -89,6 +95,9 @@ public:
         this->_quaternion_base = quaternion;
         this->_scale = scale;
         _name = name;
+        timer_cnt = 0;
+        this->timer_speed = timer_speed;
+        this->timer_bound = timer_bound;
 	}
     
     void loadmodel(string const &path, bool gamma = false)
@@ -134,7 +143,7 @@ public:
         glUniform1i(uniform_list.render.is_ssao, bfshading_effect.ssao);
 
 		std::vector<tinyobj::shape_t> new_shapes;
-		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 55.0f);
+		GetFbxAnimation(characterFbx, new_shapes, this->timer_cnt / timer_speed);
 
         glActiveTexture(GL_TEXTURE4);
         glUniform1i(uniform_list.render.texture_diffuse1, 4);
@@ -161,7 +170,7 @@ public:
         }*/
         
         std::vector<tinyobj::shape_t> new_shapes;
-        GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+        GetFbxAnimation(characterFbx, new_shapes, this->timer_cnt / timer_speed);
         
         //glActiveTexture(GL_TEXTURE4);
         //glUniform1i(uniform_list.render.texture_diffuse1, 4);
@@ -191,7 +200,7 @@ public:
             meshes[i].draw();
         }*/
         std::vector<tinyobj::shape_t> new_shapes;
-        GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
+        GetFbxAnimation(characterFbx, new_shapes, this->timer_cnt / timer_speed);
         
         //glActiveTexture(GL_TEXTURE4);
         //glUniform1i(uniform_list.render.texture_diffuse1, 4);
@@ -255,10 +264,20 @@ public:
         printf ("   zombie quat : %f %f %f\n", _rotation.x, _rotation.y, _rotation.z);
         printf ("   scale scale : %f %f %f\n", _scale.x, _scale.y, _scale.z);
     }
+    
+    void updateTimer(){
+        timer_cnt++;
+        if (timer_cnt == timer_bound){
+            timer_cnt = 0;
+        }
+    }
 private:
 	/*  Render data  */
 	unsigned int VBO, EBO;
     glm::quat _quaternion_base; // This is for rotating the model with mouse.
+    GLubyte timer_cnt = 0;
+    GLubyte timer_bound = 100;
+    float timer_speed;
 
 	/*  Functions    */
 	// initializes all the buffer objects/arrays

@@ -3,18 +3,26 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "Fbximport::draw(UniformList, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, BfShadingEffect, unsigned char):fbximport.h">
-         <PersistentStrings>
-            <PersistentString
-               value = "characterMaterials">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "Model::draw(UniformList, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, BfShadingEffect):Model.cpp">
          <PersistentStrings>
             <PersistentString
                value = "meshes[i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "My_Display():main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "timer_cnt">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Fbximport::draw(UniformList, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, glm::tmat4x4&lt;float, (glm::precision)0&gt;, BfShadingEffect, unsigned char):fbximport.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "characterMaterials">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
