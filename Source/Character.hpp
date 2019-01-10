@@ -31,7 +31,9 @@ public:
     void key_update(unsigned char key);
     void selectThird(){current_camera = third_camera;}
     void selectFirst(){current_camera = first_camera;}
-    void reshape(int width, int height){third_camera->reshape(width, height);}
+    void reshape(int width, int height){third_camera->reshape(width, height);
+                                        first_camera->reshape(width, height);
+    }
     void trackballFlag(int mouse_x, int mouse_y, int width, int height);
     
     CameraChar* current_camera;

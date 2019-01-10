@@ -24,7 +24,7 @@ GLubyte timer_cnt = 0;
 bool timer_enabled = true;
 unsigned int timer_speed = 16;
 
-bool cam_debug = true;
+bool cam_debug = false;
 
 using namespace glm;
 using namespace std;
@@ -397,6 +397,7 @@ void My_Reshape(int width, int height){
     ssao_fbo->reshape(width, height);
     
     camera.reshape(width, height);
+    char_boy->reshape(width, height);
     
     if(cam_debug){
         proj_matrix = camera.getProjection();
@@ -456,33 +457,51 @@ void My_Timer(int val)
     static point p_old;
     static float n=0.0f;
     static bool turn_switch=false;
+    static bool animation = false;
+    static float rot_deg = 0.0;
+    static float rot_scale = 2.5;
     glutPostRedisplay();
     
     //bezier curve
     point a = { 0, 0 };
-    point b = { -2.499997, -4.199998 };
+    point b = { -2.499997, -5.7 };
     point c = { -6.499997, -4.799998 };
     point d = { -9.899995, -1.1 };
     point p;
     
-    if(!turn_switch){
-        n+=1.0f;
-        if(n>=1000.0f){
-            turn_switch=!turn_switch;
-            //            for(float i=0.0f;i<=180.0f;i++)
-            //                camera_rotate+=1;
+    if (animation){
+        if (turn_switch){
+            // +
+            rot_deg += rot_scale;
+            zombie_1.addQuaternion(glm::quat(glm::vec3(glm::radians(0.0), glm::radians(rot_scale), glm::radians(0.0))));
+            if (rot_deg == 180)
+                animation = false;
+        }else{
+            // -
+            rot_deg -= rot_scale;
+            zombie_1.addQuaternion(glm::quat(glm::vec3(glm::radians(0.0), glm::radians(-rot_scale), glm::radians(0.0))));
+            if (rot_deg == 0)
+                animation = false;
         }
-        //cout << "camera" << camera_rotate<<endl;
+        glutTimerFunc(timer_speed, My_Timer, val);
+        return;
     }
-    if(turn_switch){
+    
+    if(!animation &&!turn_switch){
+        n+=1.0f;
+        if(n>=100.0f){
+            turn_switch=!turn_switch;
+            animation = true;
+        }
+    }
+    if(!animation && turn_switch){
         n-=1.0f;
         if(n<=0.0f){
             turn_switch=!turn_switch;
-            //            for(float i=0.0f;i<=180.0f;i++)
-            //                camera_rotate-=1;
+            animation = true;
         }
     }
-    float t = static_cast<float>(n)/999.0;
+    float t = static_cast<float>(n)/99.0;
     bezier(p,a,b,c,d,t);
     zombie_1._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
     zombie_1.addPosition(zombie_1._position_add); // Update model matrix

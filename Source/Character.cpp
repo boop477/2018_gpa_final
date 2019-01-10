@@ -13,6 +13,7 @@ Character::Character(Fbximport* model){
     _model = model;
     third_camera = new CameraChar(glm::vec3(-1.5, 2.0, 0.0), _model->getPosition(), _eye_front);
     first_camera = new CameraChar(glm::vec3(1.5, 2.0, 0.0), _model->getPosition(), _eye_front);
+    this->selectFirst();
 }
 void Character::mouse_update(){
     // In MyDraw()
