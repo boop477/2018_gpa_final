@@ -6,6 +6,28 @@ Camera::Camera(){
 }
 Camera::~Camera(){
 }
+void Camera::key_update(unsigned char key){
+    if (is_activated){
+        if (key == 'w') {
+            moveFront();
+        }
+        else if (key == 's') {
+            moveBack();
+        }
+        else if (key == 'a') {
+            moveLeft();
+        }
+        else if (key == 'd') {
+            moveRight();
+        }
+        else if (key == 'z') {
+            moveUp();
+        }
+        else if (key == 'x') {
+            moveDown();
+        }
+    }
+}
 void Camera::trackballUpdate(int mouse_x, int mouse_y, int height, int width) {
 	/*
 	Input:

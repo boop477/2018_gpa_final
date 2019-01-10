@@ -25,20 +25,41 @@
 
 class Character{
 public:
-    Character(Fbximport* model);
+    Character(Fbximport* idle, Fbximport* run);
     //void mouse_update(int mouse_x, int mouse_y, int height, int width);
     void mouse_update();
     void key_update(unsigned char key);
+    void key_update_up(unsigned char key);
+    
     void selectThird(){current_camera = third_camera;}
     void selectFirst(){current_camera = first_camera;}
-    void reshape(int width, int height){third_camera->reshape(width, height);}
+    void selectRun(){current_model = _run;}
+    void selectIdle(){current_model = _idle;}
+    
+    void reshape(int width, int height){third_camera->reshape(width, height);
+                                        first_camera->reshape(width, height);}
+    void updateTimer();
     void trackballFlag(int mouse_x, int mouse_y, int width, int height);
     
-    CameraChar* current_camera;
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix,
+              glm::mat4 light_vp_matrix,
+              BfShadingEffect bfshading_effect);
+    void draw(UniformList uniform_list,
+              glm::mat4 light_vp_matrix);
+    void draw(UniformList uniform_list,
+              glm::mat4 view_matrix,
+              glm::mat4 proj_matrix);
     
+    CameraChar* current_camera;
+    Fbximport* current_model;
+    bool isMoving = false;
 private:
-    Fbximport* _model;
-    glm::vec3 _eye_front = glm::vec3(1.0f, 0.0f, 0.0f); // This var is shared with cameras
+    Fbximport* _idle;
+    Fbximport* _run;
+    
+    glm::vec3 _eye_front = glm::vec3(1.0f, 0.0f, 0.0f);
     CameraChar* third_camera;
     CameraChar* first_camera;
     
