@@ -18,10 +18,13 @@
 #include "BfshadingEffect.h"
 #include "FBXLoader/fbximport.h"
 #include "Bezier.h"
+#include "Character.hpp"
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
 unsigned int timer_speed = 16;
+
+bool cam_debug = true;
 
 using namespace glm;
 using namespace std;
@@ -31,7 +34,7 @@ mat4 proj_matrix;
 mat4 inv_vp_matrix;
 
 glm::vec3 add_pos = vec3(0.0);
-glm::vec3 set_quat = vec3(0.0);
+glm::vec3 set_quat = glm::vec3(0.0, 1.483530, 0.349066);
 
 void My_Reshape(int width, int height);
 
@@ -60,6 +63,7 @@ Model* mesh;                 // Scene
 Fbximport zombie_1;            // Our SUPER CUTE zombie
 Fbximport* zombie = nullptr;
 Fbximport boy;
+Character* char_boy;
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -190,10 +194,10 @@ void My_Init(){
                      "zombie_police");
     boy.loadmodel("Running.fbx",
                   glm::vec3(-7.133575, 0.076441, -0.014676), //-3.833578 0.076441 -0.014676
-                  glm::quat(glm::vec3(0.174533, 1.483530, 0.349066)), // 0.174533 1.483530 0.349066
+                  glm::quat(glm::vec3(0.087266, 1.570796, 0.087267)), // 0.174533 1.483530 0.349066
                   glm::vec3(0.01, 0.01, 0.01),
                   "boy");
-    set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
+    char_boy = new Character(&boy);
     // __ END __ //
     
     // == Turn on all the effects == //
@@ -229,6 +233,9 @@ void My_Display(){
      * 4. Get Sobj, Snoobj and Sb
      * 4. Fbo to screen
      */
+    
+    char_boy->mouse_update();
+    
     static const GLfloat gray[] = { 0.5f, 0.5f, 0.5f, 1.0f };
     static const GLfloat pink[] = { 1.0f, 0.5f, 0.5f, 1.0f };
     static const GLfloat ones[] = { 1.0f };
@@ -242,8 +249,15 @@ void My_Display(){
     mat4 shadow_sbpv_matrix = scale_bias_matrix * light_vp_matrix;
     
     // == View and projection matrix == //
-    view_matrix = camera.getView();
-    inv_vp_matrix = inverse(proj_matrix * view_matrix);
+    if(cam_debug){
+        view_matrix = camera.getView();
+        inv_vp_matrix = inverse(proj_matrix * view_matrix);
+    }
+    else{
+        view_matrix = char_boy->current_camera->getView();
+        inv_vp_matrix = inverse(proj_matrix * view_matrix);
+    }
+    
     
     // == Draw the depth map == //
     glUseProgram(depth_prog);
@@ -258,9 +272,9 @@ void My_Display(){
     // depth-normal path
     g_buffer->beforeDraw();
     glUseProgram(depth_normal_prog);
-    mesh->draw(uniforms, camera.getView(), camera.getProjection());
-    zombie_1.draw(uniforms, camera.getView(), camera.getProjection(), timer_cnt);
-    boy.draw(uniforms, camera.getView(), camera.getProjection(), timer_cnt);
+    mesh->draw(uniforms, view_matrix, proj_matrix);
+    zombie_1.draw(uniforms, view_matrix, proj_matrix, timer_cnt);
+    boy.draw(uniforms, view_matrix, proj_matrix, timer_cnt);
     g_buffer->afterDraw();
     
     // SSao
@@ -383,7 +397,13 @@ void My_Reshape(int width, int height){
     ssao_fbo->reshape(width, height);
     
     camera.reshape(width, height);
-    proj_matrix = camera.getProjection();
+    
+    if(cam_debug){
+        proj_matrix = camera.getProjection();
+    }
+    else{
+        proj_matrix = char_boy->current_camera->getProjection();
+    }
 }
 
 void _My_Timer(int val){
@@ -475,6 +495,10 @@ void My_Timer(int val)
 void My_PassiveMousePosition(int x, int y) {
     //glUniform2f(u_mouse_pos, float(x)/screenView.x, (screenView.y - float(y))/screenView.y);
     camera.trackballUpdate(x, y, viewport_size.width, viewport_size.height);
+    if (!cam_debug){
+        //char_boy->mouse_update(x, y, viewport_size.width, viewport_size.height);
+        char_boy->trackballFlag(x, y, viewport_size.width, viewport_size.height);
+    }
 }
 void My_Keyboard(unsigned char key, int x, int y)
 {
@@ -583,6 +607,9 @@ void My_Keyboard(unsigned char key, int x, int y)
         zombie->log();
     }
     
+    if (!cam_debug)
+        char_boy->key_update(key);
+    
     printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
     /*printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
     printf ("zombie quat: %f %f %f\n", set_quat.x, set_quat.y, set_quat.z);
@@ -645,6 +672,17 @@ void My_Menu(int id){
         case MENU_SHADOW_OFF:
             bfshading_effect.shadow = 0;
             break;
+        case MENU_CAM_DEBUG:
+            cam_debug = true;
+            break;
+        case MENU_CAM_THIRD:
+            cam_debug = false;
+            char_boy->selectThird();
+            break;
+        case MENU_CAM_FIRST:
+            cam_debug = false;
+            char_boy->selectFirst();
+            break;
         default:
             break;
     }
@@ -680,11 +718,13 @@ int main(int argc, char *argv[]){
     int menu_timer = glutCreateMenu(My_Menu);
     int menu_normal_map = glutCreateMenu(My_Menu);
     int menu_shadow = glutCreateMenu(My_Menu);
+    int menu_cam = glutCreateMenu(My_Menu);
     
     glutSetMenu(menu_main);
     glutAddSubMenu("Timer", menu_timer);
     glutAddSubMenu("Normal map", menu_normal_map);
     glutAddSubMenu("Shadow", menu_shadow);
+    glutAddSubMenu("Cameras", menu_cam);
     glutAddMenuEntry("depth map(light)", MENU_DEPTH_LIGHT);
     glutAddMenuEntry("depth map(eye)", MENU_DEPTH_EYES);
     glutAddMenuEntry("ssao", MENU_SSAO);
@@ -702,6 +742,11 @@ int main(int argc, char *argv[]){
     glutSetMenu(menu_shadow);
     glutAddMenuEntry("Shadow? YES :)", MENU_SHADOW_ON);
     glutAddMenuEntry("Shadow? NOPE :(", MENU_SHADOW_OFF);
+    
+    glutSetMenu(menu_cam);
+    glutAddMenuEntry("Debug camera", MENU_CAM_DEBUG);
+    glutAddMenuEntry("Third camera", MENU_CAM_THIRD);
+    glutAddMenuEntry("First camera", MENU_CAM_FIRST);
     
     glutSetMenu(menu_main);
     glutAttachMenu(GLUT_RIGHT_BUTTON);

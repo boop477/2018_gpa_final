@@ -26,6 +26,8 @@
 		AAB4D00421E3A89800842FDB /* Gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00221E3A89800842FDB /* Gbuffer.cpp */; };
 		AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00521E3AC1F00842FDB /* SsaoFbo.cpp */; };
 		AAB4D00A21E3AF9500842FDB /* Ssao.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAB4D00821E3AF9500842FDB /* Ssao.cpp */; };
+		AAEBD72321E78814000A0D0C /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAEBD72121E78814000A0D0C /* Character.cpp */; };
+		AAEBD72621E79E66000A0D0C /* CameraChar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAEBD72421E79E66000A0D0C /* CameraChar.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -99,6 +101,10 @@
 		AABAE57A21D5A3C4006F7199 /* df_vertex.vs.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = df_vertex.vs.glsl; path = ../Assets/df_vertex.vs.glsl; sourceTree = "<group>"; };
 		AADE7D5321E5F1AC00F50D3F /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mesh.h; path = ../Source/mesh.h; sourceTree = "<group>"; };
 		AADE7D5421E5F1AC00F50D3F /* model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = model.h; path = ../Source/model.h; sourceTree = "<group>"; };
+		AAEBD72121E78814000A0D0C /* Character.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Character.cpp; path = ../Source/Character.cpp; sourceTree = "<group>"; };
+		AAEBD72221E78814000A0D0C /* Character.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Character.hpp; path = ../Source/Character.hpp; sourceTree = "<group>"; };
+		AAEBD72421E79E66000A0D0C /* CameraChar.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CameraChar.cpp; path = ../Source/CameraChar.cpp; sourceTree = "<group>"; };
+		AAEBD72521E79E66000A0D0C /* CameraChar.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = CameraChar.hpp; path = ../Source/CameraChar.hpp; sourceTree = "<group>"; };
 		AAF4D4E521E476F700FFA144 /* BfshadingEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BfshadingEffect.h; path = ../Source/BfshadingEffect.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +137,8 @@
 				AA38852B21E71E5600CF635F /* Models */,
 				AA001CA821E25D7200155D0C /* Camera.cpp */,
 				AA001CA521E25D7100155D0C /* Camera.hpp */,
+				AAEBD72421E79E66000A0D0C /* CameraChar.cpp */,
+				AAEBD72521E79E66000A0D0C /* CameraChar.hpp */,
 				4D28D4B91CE8B00B006CC5D4 /* GLUT.framework */,
 				4D28D4BA1CE8B00B006CC5D4 /* OpenGL.framework */,
 				4D28D4B71CE8AF45006CC5D4 /* main.cpp */,
@@ -170,6 +178,8 @@
 				AAB4D00921E3AF9500842FDB /* Ssao.hpp */,
 				AADE7D5321E5F1AC00F50D3F /* mesh.h */,
 				AADE7D5421E5F1AC00F50D3F /* model.h */,
+				AAEBD72121E78814000A0D0C /* Character.cpp */,
+				AAEBD72221E78814000A0D0C /* Character.hpp */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -301,7 +311,9 @@
 				AA3F708021E63719000CFA51 /* fbxloader.cpp in Sources */,
 				AAB4D00721E3AC1F00842FDB /* SsaoFbo.cpp in Sources */,
 				AA001CAA21E25D7200155D0C /* Camera.cpp in Sources */,
+				AAEBD72321E78814000A0D0C /* Character.cpp in Sources */,
 				4D28D4B81CE8AF45006CC5D4 /* main.cpp in Sources */,
+				AAEBD72621E79E66000A0D0C /* CameraChar.cpp in Sources */,
 				AA3F70A321E661D1000CFA51 /* CubeMap.cpp in Sources */,
 				AA127AFF21CE30C5007BF551 /* Sobj.cpp in Sources */,
 				AA80B0D921D3DCD9007EF7E9 /* Sb.cpp in Sources */,
