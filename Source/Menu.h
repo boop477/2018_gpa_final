@@ -22,5 +22,6 @@
 #define MENU_SHADOW_OFF 11
 #define MENU_CAM_THIRD 12
 #define MENU_CAM_DEBUG 13
+#define MENU_CAM_FIRST 14
 
 #endif /* Menu_h */

@@ -26,10 +26,11 @@
 class Character{
 public:
     Character(Fbximport* model);
-    void mouse_update(int mouse_x, int mouse_y, int height, int width);
+    //void mouse_update(int mouse_x, int mouse_y, int height, int width);
     void mouse_update();
     void key_update(unsigned char key);
-    void selectFirst(){current_camera = third_camera;}
+    void selectThird(){current_camera = third_camera;}
+    void selectFirst(){current_camera = first_camera;}
     void reshape(int width, int height){third_camera->reshape(width, height);}
     void trackballFlag(int mouse_x, int mouse_y, int width, int height);
     
@@ -39,6 +40,7 @@ private:
     Fbximport* _model;
     glm::vec3 _eye_front = glm::vec3(1.0f, 0.0f, 0.0f); // This var is shared with cameras
     CameraChar* third_camera;
+    CameraChar* first_camera;
     
     bool update_yaw = false;
     float yaw = 0.0;

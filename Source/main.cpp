@@ -677,6 +677,10 @@ void My_Menu(int id){
             break;
         case MENU_CAM_THIRD:
             cam_debug = false;
+            char_boy->selectThird();
+            break;
+        case MENU_CAM_FIRST:
+            cam_debug = false;
             char_boy->selectFirst();
             break;
         default:
@@ -742,6 +746,7 @@ int main(int argc, char *argv[]){
     glutSetMenu(menu_cam);
     glutAddMenuEntry("Debug camera", MENU_CAM_DEBUG);
     glutAddMenuEntry("Third camera", MENU_CAM_THIRD);
+    glutAddMenuEntry("First camera", MENU_CAM_FIRST);
     
     glutSetMenu(menu_main);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
