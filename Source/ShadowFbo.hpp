@@ -36,7 +36,7 @@ public:
     void log();
     
     void beforeDraw();
-    void afterDraw();
+    void afterDraw(int width, int height);
 private:
     
     std::string _name;

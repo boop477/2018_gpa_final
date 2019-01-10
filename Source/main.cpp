@@ -83,9 +83,9 @@ void My_Init(){
     // == Program to draw fbo to screen == //
     fbo2screen_prog = createProgram("df_vertex.vs.glsl", "df_fragment.fs.glsl", "fbo2screen");
     glUseProgram(fbo2screen_prog);
-    uniforms.fbo2screen.tex_sobj = glGetUniformLocation(fbo2screen_prog, "tex_sobj");
+    /*uniforms.fbo2screen.tex_sobj = glGetUniformLocation(fbo2screen_prog, "tex_sobj");
     uniforms.fbo2screen.tex_snoobj = glGetUniformLocation(fbo2screen_prog, "tex_snoobj");
-    uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");
+    uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");*/
     uniforms.fbo2screen.is_using_df = glGetUniformLocation(fbo2screen_prog, "is_using_df");
     uniforms.fbo2screen.tex = glGetUniformLocation(fbo2screen_prog, "tex");
     // __ END __ //
@@ -224,14 +224,11 @@ void My_Display(){
     
     // == View and projection matrix for light space == //
     mat4 light_proj_matrix = ortho(-shadow_range, shadow_range, -shadow_range, shadow_range, 0.0f, 20.0f); // far plane must be far enough.
-    //mat4 light_view_matrix = lookAt(vec3(-31.75, 26.05, -97.72), vec3(-20.0f, -23.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     mat4 light_view_matrix = lookAt(vec3(2.50, 3.00, 5.00), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     mat4 light_vp_matrix = light_proj_matrix * light_view_matrix;
     mat4 shadow_sbpv_matrix = scale_bias_matrix * light_vp_matrix;
     
     // == View and projection matrix == //
-    /*view_matrix = lookAt(vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f, -1.0f, 0.0f), vec3(0.0, 1.0, 0.0));
-     inv_vp_matrix = inverse(proj_matrix * view_matrix);*/
     view_matrix = camera.getView();
     inv_vp_matrix = inverse(proj_matrix * view_matrix);
     
@@ -240,38 +237,7 @@ void My_Display(){
     shadow_fbo->beforeDraw();
     mesh->draw(uniforms, light_vp_matrix);
     //quad->draw(uniforms, light_vp_matrix);
-    shadow_fbo->afterDraw();
-    
-    // == Get the stencil map == //
-    glUseProgram(bf_render_prog);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    
-    // Bind textures
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, shadow_fbo->depth_map);
-    glUniform1i(uniforms.render.tex_shadow, 1);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
-    glUniform1i(uniforms.render.tex_cubemap, 2);
-    
-    // Get a stencil map
-    s_obj->beforeMakingStencilMap(viewport_size.width, viewport_size.height);
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
-    s_obj->afterMakingStencilMap();
-    
-    // == Quad + Shadow - Model == //
-    s_obj->beforeDrawQuadShadow();
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
-    //quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);//T
-    s_obj->afterDrawQuadShadow();
-    
-    // == Quad - Model == //
-    s_noobj->bindStencilBuffer(s_obj->depth_stencil_map, viewport_size.width, viewport_size.height);
-    s_noobj->beforeDrawQuad();
-    mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);// false
-    //quad->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, false);
-    s_noobj->afterDrawQuad();
+    shadow_fbo->afterDraw(viewport_size.width, viewport_size.height);
     
     // == SSAO == //
     // depth-normal path
@@ -426,7 +392,7 @@ void My_Timer(int val){
     bezier(p,a,b,c,d,t);
     zombie._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
     zombie.addPosition(zombie._position_add); // Update model matrix
-    printf("%f %f\n", p.x, p.y);
+    //printf("%f %f\n", p.x, p.y);
     p_old.x = p.x;
     p_old.y = p.y;
     //bezier curve over
