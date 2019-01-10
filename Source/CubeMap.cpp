@@ -17,18 +17,32 @@ GLuint CubeMap::loadTexture(){
     glGenTextures(1, &tex_envmap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, tex_envmap);
     std::vector<std::string> textures_name;
-    textures_name.push_back("cubemaps/face-r.png");
+    
+    /*textures_name.push_back("cubemaps/face-r.png");
     textures_name.push_back("cubemaps/face-l.png");
     textures_name.push_back("cubemaps/face-t.png");
     textures_name.push_back("cubemaps/face-d.png");
     textures_name.push_back("cubemaps/face-b.png");
-    textures_name.push_back("cubemaps/face-f.png");
+    textures_name.push_back("cubemaps/face-f.png");*/
+    textures_name.push_back("ame_nebula/purplenebula_rt.tga");
+    textures_name.push_back("ame_nebula/purplenebula_lf.tga");
+    textures_name.push_back("ame_nebula/purplenebula_up.tga");
+    textures_name.push_back("ame_nebula/purplenebula_dn.tga");
+    textures_name.push_back("ame_nebula/purplenebula_bk.tga");
+    textures_name.push_back("ame_nebula/purplenebula_ft.tga");
+    
     int width, height, nrChannels;
     unsigned char *data = NULL;
     for(int i = 0; i < 6; ++i)
     {
         data = stbi_load(textures_name[i].c_str(), &width, &height, &nrChannels, 0);
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        if(data == NULL){
+            printf ("LOAD FAILED:%s\n", textures_name[i].c_str());
+        }
+        else{
+            printf ("load:%s\n", textures_name[i].c_str());
+        }
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         free(data);
     }
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
