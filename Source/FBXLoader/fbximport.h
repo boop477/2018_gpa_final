@@ -19,10 +19,17 @@
 #include <OpenGL/gl3.h>
 #include <GLUT/glut.h>
 #include <unistd.h>
+//#include "../../Include/GLM/glm/glm.hpp"
+//#include "../../Include/GLM/glm/gtc/matrix_transform.hpp"
+//#include "../../Include/GLM/glm/gtc/quaternion.hpp"
+//#include "../../Include/GLM/glm/gtx/transform.hpp"
+
 #include "../../Include/GLM/glm/glm.hpp"
-#include "../../Include/GLM/glm/gtc/matrix_transform.hpp"
-#include "../../Include/GLM/glm/gtc/quaternion.hpp"
 #include "../../Include/GLM/glm/gtx/transform.hpp"
+#include "../../Include/GLM/glm/gtx/quaternion.hpp"
+
+#include "../UniformList.h"
+#include "../BfshadingEffect.h"
 
 using namespace std;
 

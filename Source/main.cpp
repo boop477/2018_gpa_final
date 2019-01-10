@@ -18,6 +18,7 @@
 #include "BfshadingEffect.h"
 #include "FBXLoader/fbximport.h"
 #include "Bezier.h"
+#include "Character.hpp"
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
@@ -60,6 +61,7 @@ Model* mesh;                 // Scene
 Fbximport zombie_1;            // Our SUPER CUTE zombie
 Fbximport* zombie = nullptr;
 Fbximport boy;
+Character* char_boy;
 
 ShadowFbo* shadow_fbo;       // Draw shadow to this fbo
 Sobj* s_obj;                 // Draw quad+shadow-model to this fbo
@@ -194,6 +196,7 @@ void My_Init(){
                   glm::vec3(0.01, 0.01, 0.01),
                   "boy");
     set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
+    char_boy = new Character(&boy);
     // __ END __ //
     
     // == Turn on all the effects == //
@@ -475,6 +478,7 @@ void My_Timer(int val)
 void My_PassiveMousePosition(int x, int y) {
     //glUniform2f(u_mouse_pos, float(x)/screenView.x, (screenView.y - float(y))/screenView.y);
     camera.trackballUpdate(x, y, viewport_size.width, viewport_size.height);
+    char_boy->mouse_update(x, y, viewport_size.width, viewport_size.height);
 }
 void My_Keyboard(unsigned char key, int x, int y)
 {

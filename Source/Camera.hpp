@@ -28,6 +28,7 @@ public:
 	void moveRight();
 	void moveUp();
 	void moveDown();
+    
 
 	glm::vec3 eye_pos = glm::vec3(-6.462197, 1.718549, 0.039003);//-10.0, -5.0, 0.0
 	glm::vec3 eye_front = glm::vec3(1.0f, 0.0f, 0.0f);

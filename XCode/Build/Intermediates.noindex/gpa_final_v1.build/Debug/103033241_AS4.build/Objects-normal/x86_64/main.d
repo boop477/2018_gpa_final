@@ -351,4 +351,5 @@ dependencies: /Users/softcat/ComputerGraphics/gpa_final/Source/main.cpp \
   /Users/softcat/ComputerGraphics/gpa_final/Include/fbxsdk/fbxsdk/utils/fbxrootnodeutility.h \
   /Users/softcat/ComputerGraphics/gpa_final/Include/fbxsdk/fbxsdk/utils/fbxusernotification.h \
   /Users/softcat/ComputerGraphics/gpa_final/Include/devil/IL/il.h \
-  /Users/softcat/ComputerGraphics/gpa_final/Source/Bezier.h
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Bezier.h \
+  /Users/softcat/ComputerGraphics/gpa_final/Source/Character.hpp
