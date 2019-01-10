@@ -29,6 +29,9 @@ mat4 view_matrix;
 mat4 proj_matrix;
 mat4 inv_vp_matrix;
 
+glm::vec3 add_pos = vec3(0.0);
+glm::vec3 set_quat = vec3(0.0);
+
 void My_Reshape(int width, int height);
 
 using namespace glm;
@@ -172,9 +175,10 @@ void My_Init(){
                      glm::vec3(0.15, 0.15, 0.15));
     
     zombie.loadmodel("zombie_walk.FBX",
-                     glm::vec3(0, 0.9, 0),
-                     glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
-                     vec3(0.05f, 0.05f, 0.05f));
+                     glm::vec3(17.200029, 1.100000, -1.500000),
+                     glm::quat(glm::vec3(radians(-90.0), radians(0.0), radians(0.0))),
+                     glm::vec3(0.10, 0.10, 0.10));
+    set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
     // __ END __ //
     
     // == Turn on all the effects == //
@@ -326,7 +330,7 @@ void My_Display(){
     
     // draw mesh
     mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
-    //zombie.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
+    zombie.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
     
     s_b->afterDrawSkyboxModel();
     
@@ -446,7 +450,47 @@ void My_Keyboard(unsigned char key, int x, int y)
     else if(key == 'i'){
         fb2screen_flag->add(1);
     }
-    printf("%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
+    else if(key == 'f'){
+        add_pos = glm::vec3(0.1, 0.0, 0.0);
+    }
+    else if(key == 'v'){
+        add_pos = glm::vec3(-0.1, 0.0, 0.0);
+    }
+    else if(key == 'g'){
+        add_pos = glm::vec3(0.0, 0.1, 0.0);
+    }
+    else if(key == 'b'){
+        add_pos = glm::vec3(0.0, -0.1, 0.0);
+    }
+    else if(key == 'h'){
+        add_pos = glm::vec3(0.0, 0.0, 0.1);
+    }
+    else if(key == 'n'){
+        add_pos = glm::vec3(0.0, 0.0, -0.1);
+    } // ROtation
+    else if(key == 'j'){
+        set_quat += glm::vec3(glm::radians(5.0), 0.0, 0.0);
+    }
+    else if(key == 'm'){
+        set_quat += glm::vec3(glm::radians(-5.0), 0.0, 0.0);
+    }
+    else if(key == 'k'){
+        set_quat += glm::vec3(0.0, glm::radians(5.0), 0.0);
+    }
+    else if(key == ','){
+        set_quat += glm::vec3(0.0, glm::radians(-5.0), 0.0);
+    }
+    else if(key == 'l'){
+        set_quat += glm::vec3(0.0, 0.0, glm::radians(5.0));
+    }
+    else if(key == '.'){
+        set_quat += glm::vec3(0.0, 0.0, glm::radians(-5.0));
+    }
+    zombie.addPosition(add_pos);
+    zombie.setQuaternion(glm::quat(set_quat));
+    printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
+    printf ("zombie quat: %f %f %f\n", set_quat.x, set_quat.y, set_quat.z);
+    printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
 }
 void My_SpecialKeys(int key, int x, int y){
     switch (key)

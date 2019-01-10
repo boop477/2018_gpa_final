@@ -8,11 +8,13 @@
  *                 when drawing Snoobj.
  */
 #version 410 core
-uniform sampler2D tex;
+uniform sampler2D tex; // Not being used
+uniform sampler2D tex_normal_map; // Not being used
+
 uniform sampler2D tex_ssao;
-uniform sampler2D tex_normal_map;
 uniform samplerCube tex_cubemap;
 uniform sampler2DShadow tex_shadow;
+
 uniform int is_quad;
 uniform int is_shadow;
 uniform int is_ssao;

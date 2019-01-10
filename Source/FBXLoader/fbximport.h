@@ -123,8 +123,8 @@ public:
 		std::vector<tinyobj::shape_t> new_shapes;
 		GetFbxAnimation(characterFbx, new_shapes, timer_cnt / 255.0f);
 
-        glActiveTexture(GL_TEXTURE1);
-        glUniform1i(uniform_list.render.texture_diffuse1, 1);
+        glActiveTexture(GL_TEXTURE4);
+        glUniform1i(uniform_list.render.texture_diffuse1, 4);
 		for (unsigned int i = 0; i < characterShapes.size(); i++)
 		{
 			glBindVertexArray(characterShapes[i].vao);
@@ -185,6 +185,7 @@ private:
 
 		if (ret)
 		{
+            printf ("load:%s\n", path_char);
 			// For Each Material
 			for (int i = 0; i < materials.size(); i++)
 			{
@@ -194,6 +195,7 @@ private:
 				Material mat;
 				if (ilLoadImage(materials[i].diffuse_texname.c_str()))
 				{
+                    printf ("load texture:%s\n", materials[i].diffuse_texname.c_str());
 					int width = ilGetInteger(IL_IMAGE_WIDTH);
 					int height = ilGetInteger(IL_IMAGE_HEIGHT);
 					unsigned char *data = new unsigned char[width * height * 4];
@@ -223,18 +225,19 @@ private:
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 				glBindBuffer(GL_ARRAY_BUFFER, shape.vboTex);
 				glBufferData(GL_ARRAY_BUFFER, shapes[i].mesh.texcoords.size() * sizeof(float), shapes[i].mesh.texcoords.data(), GL_STATIC_DRAW);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo);
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, shapes[i].mesh.indices.size() * sizeof(unsigned int), shapes[i].mesh.indices.data(), GL_STATIC_DRAW);
 				shape.materialId = shapes[i].mesh.material_ids[0];
 				shape.indexCount = shapes[i].mesh.indices.size();
 				glEnableVertexAttribArray(0);
-				glEnableVertexAttribArray(1);
+				glEnableVertexAttribArray(2);
 				characterShapes.push_back(shape);
-
-
 			}
 		}
+        else{
+            printf ("FAILED load:%s\n", path_char);
+        }
 	}
 };
 
