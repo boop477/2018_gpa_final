@@ -63,7 +63,9 @@ public:
 	vector<Shape> characterShapes;
 	vector<Material> characterMaterials;
 	fbx_handles characterFbx;
+    
     glm::vec3 _position;
+    glm::vec3 _position_add; // This is for moving in(?) bezier curve. REMEMBER TO add this var to _position everytime before getModelMatrix()
     glm::quat _quaternion;
     glm::vec3 _scale;
 

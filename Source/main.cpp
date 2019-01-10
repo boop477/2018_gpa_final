@@ -3,7 +3,7 @@
 //#include "Mesh.hpp"
 #include "UniformList.h"
 #include "CubeMap.hpp"
-#include "Quad.hpp"
+//#include "Quad.hpp"
 #include "ShadowFbo.hpp"
 #include "Sobj.hpp"
 #include "Snoobj.hpp"
@@ -17,6 +17,7 @@
 #include "Menu.h"
 #include "BfshadingEffect.h"
 #include "FBXLoader/fbximport.h"
+#include "Bezier.h"
 
 GLubyte timer_cnt = 0;
 bool timer_enabled = true;
@@ -54,7 +55,7 @@ ViewportSize viewport_size;  // A struct to save (width, height). This will be u
 Camera camera = Camera();
 
 CubeMap* cube_map;           // Skymap
-Quad* quad;                  // Quad
+//Quad* quad;                  // Quad
 Model* mesh;                 // Scene
 Fbximport zombie;            // Our SUPER CUTE zombie
 
@@ -165,17 +166,18 @@ void My_Init(){
     cube_map = new CubeMap();
     tex_envmap = cube_map->loadTexture();    // We've hardcoded the texture location in this function.
     
-    quad = new Quad(vec3(-20.0, -12.5, 0.0),
+    /*quad = new Quad(vec3(-20.0, -12.5, 0.0),
                     vec3(1.0, 1.0, 1.0),
-                    glm::quat(vec3(0.0, 0.0, 0.0)));
+                    glm::quat(vec3(0.0, 0.0, 0.0)));*/
     
     mesh = new Model("Space/Space Station Scene.obj",
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
-    
+    // glm::vec3(17.200029, 1.100000, -1.500000); Zombie stays in hallway
+    // glm::vec3(3.199999, 1.100000, -1.500000); Zimbie stands behind the status
     zombie.loadmodel("zombie_walk.FBX",
-                     glm::vec3(17.200029, 1.100000, -1.500000),
+                     glm::vec3(3.199999, 1.100000, -1.500000),
                      glm::quat(glm::vec3(radians(-90.0), radians(0.0), radians(0.0))),
                      glm::vec3(0.10, 0.10, 0.10));
     set_quat = glm::vec3(radians(-90.0), radians(0.0), radians(0.0));
@@ -237,7 +239,7 @@ void My_Display(){
     glUseProgram(depth_prog);
     shadow_fbo->beforeDraw();
     mesh->draw(uniforms, light_vp_matrix);
-    quad->draw(uniforms, light_vp_matrix);
+    //quad->draw(uniforms, light_vp_matrix);
     shadow_fbo->afterDraw();
     
     // == Get the stencil map == //
@@ -345,18 +347,6 @@ void My_Display(){
     //switch(fb2screen_flag->get()){
     switch(current_menu){
         case MENU_ALL:
-            // differential rendering
-            /*glActiveTexture(GL_TEXTURE1);
-             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
-             glUniform1i(uniforms.fbo2screen.tex_sb, 1);
-             glActiveTexture(GL_TEXTURE2);
-             glBindTexture(GL_TEXTURE_2D, s_obj->texture_map);
-             glUniform1i(uniforms.fbo2screen.tex_sobj, 2);
-             glActiveTexture(GL_TEXTURE3);
-             glBindTexture(GL_TEXTURE_2D, s_noobj->texture_map);
-             glUniform1i(uniforms.fbo2screen.tex_snoobj, 3);
-             glUniform1i(uniforms.fbo2screen.is_using_df, 1);*/
-            
             glActiveTexture(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_2D, s_b->texture_map);
             glUniform1i(uniforms.fbo2screen.tex, 4);
@@ -411,13 +401,41 @@ void My_Reshape(int width, int height){
     camera.reshape(width, height);
     proj_matrix = camera.getProjection();
 }
+
 void My_Timer(int val){
+    static float n=0.0f;
+    static point p_old;
     timer_cnt++;
     glutPostRedisplay();
-    if (timer_enabled)
-    {
-        glutTimerFunc(timer_speed, My_Timer, val);
-    }
+    
+    //bezier curve
+    point a = { 0.0, 0.0};
+    point b = { -3.2, 0.0 };
+    point c = { -3.2, 4.6 };
+    point d = { 0.0, 4.6 };
+    point p;
+    
+    if(n<1000.0f)
+        n+=1.0f;
+    if(n>=1000.0f)
+        n=0;
+    float t = static_cast<float>(n)/1024.0;
+    //printf("%f \n", t);
+    //robot_bez.bezier(p,a,b,c,d,t);
+    //robot_move=vec3(p.x, 0, p.y);
+    bezier(p,a,b,c,d,t);
+    zombie._position_add = glm::vec3(p.x-p_old.x, 0, p.y-p_old.y);
+    zombie.addPosition(zombie._position_add); // Update model matrix
+    printf("%f %f\n", p.x, p.y);
+    p_old.x = p.x;
+    p_old.y = p.y;
+    //bezier curve over
+    //printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
+    
+    //if (timer_enabled)
+    //{
+    glutTimerFunc(timer_speed, My_Timer, val);
+    //}
 }
 void My_PassiveMousePosition(int x, int y) {
     //glUniform2f(u_mouse_pos, float(x)/screenView.x, (screenView.y - float(y))/screenView.y);
@@ -488,9 +506,9 @@ void My_Keyboard(unsigned char key, int x, int y)
     }
     zombie.addPosition(add_pos);
     zombie.setQuaternion(glm::quat(set_quat));
-    printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
+    /*printf ("\nzombie pos: %f %f %f\n", zombie._position.x, zombie._position.y, zombie._position.z);
     printf ("zombie quat: %f %f %f\n", set_quat.x, set_quat.y, set_quat.z);
-    printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
+    printf("camera: %f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);*/
 }
 void My_SpecialKeys(int key, int x, int y){
     switch (key)
@@ -553,6 +571,7 @@ void My_Menu(int id){
             break;
     }
 }
+
 int main(int argc, char *argv[]){
 #ifdef __APPLE__
     // Change working directory to source code path
