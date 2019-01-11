@@ -84,6 +84,8 @@ struct UniformList
         GLint tex_sb;
         GLint tex;
         GLint is_using_df;
+        GLint filter_index;
+        GLint time;
     } fbo2screen;
 };
 

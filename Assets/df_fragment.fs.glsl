@@ -14,6 +14,8 @@ uniform sampler2D tex_snoobj;
 uniform sampler2D tex_sb;*/
 uniform sampler2D tex;
 uniform int is_using_df;
+uniform int filter_index;
+uniform float time;
 
 out vec4 color;
 
@@ -30,9 +32,24 @@ void main()
     //vec4 c_sb = texture(tex_sb, fs_in.texcoord);
     vec4 c_single_texture = texture(tex, fs_in.texcoord);
     
-    //if (is_using_df == 1)
-    //    color = c_sb + (c_sobj-c_snoobj);
-    //else
-    //    color = c_single_texture;
-    color = c_single_texture;
+    if (filter_index == 1){
+        /*float pi = 3.1415926;
+        float offset = time;
+        float u = fs_in.texcoord.x + 0.1*sin(fs_in.texcoord.y*3.0*pi+offset);
+        float v = fs_in.texcoord.y;*/
+        //c_single_texture.r = c_single_texture.r * time;
+        //c_single_texture = texture(tex, vec2(u, v));
+        float offset = time;
+        vec4 texture_color_Left = texture(tex, fs_in.texcoord - vec2(offset, 0.0));
+        vec4 texture_color_Right = texture(tex, fs_in.texcoord + vec2(offset, 0.0));
+        float Color_R = texture_color_Left.r*0.299+texture_color_Left.g*0.587+texture_color_Left.b*0.114;
+        float Color_G = texture_color_Right.g;
+        float Color_B = texture_color_Right.b;
+        vec4 texture_color = vec4(Color_R, Color_G, Color_B, 1.0);
+        color = texture_color;
+    }else{
+        color = c_single_texture;
+    }
+    
+    
 }

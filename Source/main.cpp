@@ -71,6 +71,19 @@ Ssao ssao_c = Ssao();      // Ssao vao
 Gbuffer* g_buffer;           // Frame buffer object to save depth and normal. This guy is being used to get ssao.
 SsaoFbo* ssao_fbo;           // FBO to save ssao.
 
+int collisionDetect(glm::vec3 a, glm::vec3 b){
+    float threshold = 3.0;
+    float distance = sqrt((a.x-b.x)*(a.x-b.x)+(a.z-b.z)*(a.z-b.z));
+    if (distance < threshold){
+        //printf("Collide");
+        return 1;
+    }
+    else{
+        //printf("%f %f\n", distance, threshold);
+        return 0;
+    }
+}
+
 void My_Init(){
     /*
      * 1. Load programs and get uniform vars index.
@@ -91,6 +104,9 @@ void My_Init(){
     uniforms.fbo2screen.tex_sb = glGetUniformLocation(fbo2screen_prog, "tex_sb");*/
     uniforms.fbo2screen.is_using_df = glGetUniformLocation(fbo2screen_prog, "is_using_df");
     uniforms.fbo2screen.tex = glGetUniformLocation(fbo2screen_prog, "tex");
+    uniforms.fbo2screen.filter_index = glGetUniformLocation(fbo2screen_prog, "filter_index");
+    uniforms.fbo2screen.time = glGetUniformLocation(fbo2screen_prog, "time");
+    //uniforms.fbo2screen.red_scale = glGetUniformLocation(fbo2screen_prog, "red_scale");
     // __ END __ //
     
     // == Program to draw ssao->depth+normal map == //
@@ -265,6 +281,8 @@ void My_Display(){
         inv_vp_matrix = inverse(proj_matrix * view_matrix);
     }
     
+    // == Collision Detection == //
+    int filter_index = collisionDetect(zombie_1.getPosition(), char_boy->current_model->getPosition());
     
     // == Draw the depth map == //
     glUseProgram(depth_prog);
@@ -346,6 +364,13 @@ void My_Display(){
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+    
+    glUniform1i(uniforms.fbo2screen.filter_index, filter_index);
+    float time = glutGet(GLUT_ELAPSED_TIME) / 400.0;
+    time = time - int(time);
+    time = time / 100.0f;
+    //printf("%f\n", time);
+    glUniform1f(uniforms.fbo2screen.time, time);
     
     //switch(fb2screen_flag->get()){
     switch(current_menu){
@@ -494,7 +519,7 @@ void My_Keyboard(unsigned char key, int x, int y)
     glm::vec3 add_pos = glm::vec3(0.0);
     glm::vec3 add_rot = glm::vec3(0.0);
     
-    zombie = &zombie_1; // User can control pos/rot of the variable assigned to zombie
+    zombie = nullptr; // User can control pos/rot of the variable assigned to zombie
     
     float pos_unit = 0.01;
     float rot_unit = 1.0;
