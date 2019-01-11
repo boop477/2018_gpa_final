@@ -172,6 +172,10 @@ void My_Init(){
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
+    /*mesh = new Model("Space/Space Station Scene.obj",
+                     glm::vec3(0.0, 0.0, 0.0),
+                     glm::quat(glm::vec3(radians(0.0), radians(0.0), radians(0.0))),
+                     glm::vec3(0.0, 0.0, 0.0));*/
 
     zombie_1.loadmodel("zombie_walk_1.fbx",
                        glm::vec3(4.866417, -0.023559, -0.214670),
@@ -257,9 +261,7 @@ void My_Display(){
     shadow_fbo->beforeDraw();
     mesh->draw(uniforms, light_vp_matrix);
     zombie_1.draw(uniforms, light_vp_matrix);
-    //boy.draw(uniforms, light_vp_matrix, timer_cnt);
     char_boy->draw(uniforms, light_vp_matrix);
-    //quad->draw(uniforms, light_vp_matrix);
     shadow_fbo->afterDraw(viewport_size.width, viewport_size.height);
     
     // == SSAO == //
@@ -269,14 +271,13 @@ void My_Display(){
     mesh->draw(uniforms, view_matrix, proj_matrix);
     zombie_1.draw(uniforms, view_matrix, proj_matrix);
     char_boy->draw(uniforms, view_matrix, proj_matrix);
-    //boy.draw(uniforms, view_matrix, proj_matrix, timer_cnt);
     g_buffer->afterDraw();
     
     // SSao
     ssao_fbo->beforeDraw();
     glUseProgram(ssao_prog);
     
-    glm::mat4 proj_matrix = camera.getProjection();
+    //glm::mat4 proj_matrix = camera.getProjection();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, g_buffer->normal_map);
     glUniform1i(uniforms.ssao.normal_map, 0);
@@ -325,7 +326,6 @@ void My_Display(){
     // draw mesh
     mesh->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
     zombie_1.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
-    //boy.draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect, timer_cnt);
     char_boy->draw(uniforms, view_matrix, proj_matrix, shadow_sbpv_matrix, bfshading_effect);
     s_b->afterDrawSkyboxModel();
     
@@ -536,7 +536,11 @@ void My_Keyboard(unsigned char key, int x, int y)
         zombie->log();
     }
     
-    camera.key_update(key);
+    
+    if (camera.is_activated){
+        camera.key_update(key);
+        printf("cam:%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
+    }
     if (!camera.is_activated)
         char_boy->key_update(key);
 }
@@ -597,6 +601,12 @@ void My_Menu(int id){
         case MENU_SHADOW_OFF:
             bfshading_effect.shadow = 0;
             break;
+        case MENU_SSAO_ON :
+            bfshading_effect.ssao = 1;
+            break;
+        case MENU_SSAO_OFF:
+            bfshading_effect.ssao = 0;
+            break;
         case MENU_CAM_DEBUG:
             camera.is_activated = true;
             break;
@@ -633,7 +643,7 @@ int main(int argc, char *argv[]){
 #endif
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(1440, 900);
-    glutCreateWindow("Assignment 4"); // You cannot use OpenGL functions before this line; The OpenGL context must be created first by glutCreateWindow()!
+    glutCreateWindow("GPA_FINAL"); // You cannot use OpenGL functions before this line; The OpenGL context must be created first by glutCreateWindow()!
 #ifdef _MSC_VER
     glewInit();
 #endif
@@ -648,12 +658,14 @@ int main(int argc, char *argv[]){
     int menu_timer = glutCreateMenu(My_Menu);
     int menu_normal_map = glutCreateMenu(My_Menu);
     int menu_shadow = glutCreateMenu(My_Menu);
+    int menu_ssao = glutCreateMenu(My_Menu);
     int menu_cam = glutCreateMenu(My_Menu);
     
     glutSetMenu(menu_main);
     glutAddSubMenu("Timer", menu_timer);
     glutAddSubMenu("Normal map", menu_normal_map);
     glutAddSubMenu("Shadow", menu_shadow);
+    glutAddSubMenu("Ssao", menu_ssao);
     glutAddSubMenu("Cameras", menu_cam);
     glutAddMenuEntry("depth map(light)", MENU_DEPTH_LIGHT);
     glutAddMenuEntry("depth map(eye)", MENU_DEPTH_EYES);
@@ -672,6 +684,10 @@ int main(int argc, char *argv[]){
     glutSetMenu(menu_shadow);
     glutAddMenuEntry("Shadow? YES :)", MENU_SHADOW_ON);
     glutAddMenuEntry("Shadow? NOPE :(", MENU_SHADOW_OFF);
+    
+    glutSetMenu(menu_ssao);
+    glutAddMenuEntry("Ssao? YES :)", MENU_SSAO_ON);
+    glutAddMenuEntry("Ssao? NOPE :(", MENU_SSAO_OFF);
     
     glutSetMenu(menu_cam);
     glutAddMenuEntry("Debug camera", MENU_CAM_DEBUG);

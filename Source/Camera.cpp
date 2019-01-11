@@ -2,7 +2,10 @@
 //#include "../Include/Include.h"
 
 Camera::Camera(){
-	view = glm::lookAt(eye_pos, eye_pos + eye_front, eye_up);
+	//view = glm::lookAt(eye_pos, eye_pos + eye_front, eye_up);
+    view = glm::lookAt(glm::vec3(46.0f,30.0f,46.0f),
+                       glm::vec3(-30.0f, 0.0f, -30.0f),
+                       glm::vec3(0.0f, 1.0f, 0.0f));
 }
 Camera::~Camera(){
 }
@@ -36,7 +39,7 @@ void Camera::trackballUpdate(int mouse_x, int mouse_y, int height, int width) {
 	  height, width: (h, w) of the window.
 	*/
 
-	mouse_x -= width / 2;
+	/*mouse_x -= width / 2;
 	mouse_y -= height / 2;
 
 	// Map from [-width/2, width/2] to [-180.0, 180.0]
@@ -48,7 +51,7 @@ void Camera::trackballUpdate(int mouse_x, int mouse_y, int height, int width) {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	front.y = sin(glm::radians(pitch));
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	eye_front = glm::normalize(front);
+	eye_front = glm::normalize(front);*/
 }
 void Camera::reshape(int width, int height) {
     glViewport(0, 0, width, height);
@@ -57,7 +60,7 @@ void Camera::reshape(int width, int height) {
     //projection = glm::perspective(glm::radians(60.0f), viewportAspect, 0.1f, 10000.0f);
 }
 glm::mat4 Camera::getView() {
-	view = glm::lookAt(eye_pos, eye_pos + eye_front, eye_up);
+	//view = glm::lookAt(eye_pos, eye_pos + eye_front, eye_up);
     //view = lookAt(glm::vec3(-2.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	return view;
 }

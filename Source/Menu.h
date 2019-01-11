@@ -23,5 +23,7 @@
 #define MENU_CAM_THIRD 12
 #define MENU_CAM_DEBUG 13
 #define MENU_CAM_FIRST 14
+#define MENU_SSAO_ON 15
+#define MENU_SSAO_OFF 16
 
 #endif /* Menu_h */

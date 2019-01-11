@@ -75,7 +75,7 @@ void main()
     
     vec3 Kd = texColor;
     vec3 Ks = vec3(3.0);
-    float nmap_coef = 0.2;
+    float nmap_coef = 0.5;
     
     // == BF Shading == //
     vec3 RdKd;
@@ -91,7 +91,10 @@ void main()
         RdKd = max(dot(fs_in.N, normalize(fs_in.L)), 0.0)*Kd;
         RsKs = pow(max(dot(fs_in.N, normalize(fs_in.H)), 0.0), specular_power) * Ks;
     }
-    RaKa = vec3(texColor*1.0*ambient);
+    if (is_ssao == 1)
+        RaKa = vec3(texColor*1.0*ambient);
+    else
+        RaKa = vec3(texColor*1.0);
     final_color = vec4(RdKd+RsKs+RaKa, 1.0);
     
     // == Environment Mapping == //
@@ -106,5 +109,5 @@ void main()
     }
     
     fragColor = final_color;
-    //fragColor = vec4(1.0);
+    //fragColor = vec4(texture(texture_normal1, fs_in.tex_cord).rgb, 1.0);
 }
