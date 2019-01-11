@@ -51,6 +51,7 @@ UniformList uniforms;        // A struct to save the location of uniform variabl
 MaxRangeInt* fb2screen_flag; // A flag to tell fb2screen_prog that what texture should be draw to screen.
 ViewportSize viewport_size;  // A struct to save (width, height). This will be used in fbo.reshape(...)
 Camera camera = Camera();
+Camera camera_out = Camera();
 
 CubeMap* cube_map;           // Skymap
 //Quad* quad;                  // Quad
@@ -212,6 +213,11 @@ void My_Init(){
     glBindSampler(0, sampler);
     // __ END __ //
     
+    // == Set ficed camera
+    camera_out.fix(true);
+    camera_out.initialize(glm::vec3(46.0f,30.0f,46.0f),
+                          glm::vec3(-30.0f, -30.0f, -30.0f));
+    
     // == LOG == //
     My_Reshape(1440, 900);
     shadow_fbo->log();
@@ -248,6 +254,10 @@ void My_Display(){
     // == View and projection matrix == //
     if(camera.is_activated){
         view_matrix = camera.getView();
+        inv_vp_matrix = inverse(proj_matrix * view_matrix);
+    }
+    else if(camera_out.is_activated){
+        view_matrix = camera_out.getView();
         inv_vp_matrix = inverse(proj_matrix * view_matrix);
     }
     else{
@@ -392,6 +402,7 @@ void My_Reshape(int width, int height){
     ssao_fbo->reshape(width, height);
     
     camera.reshape(width, height);
+    camera_out.reshape(width, height);
     char_boy->reshape(width, height);
     
     if(camera.is_activated){
@@ -473,9 +484,9 @@ void My_Timer(int val)
 }
 void My_PassiveMousePosition(int x, int y) {
     //glUniform2f(u_mouse_pos, float(x)/screenView.x, (screenView.y - float(y))/screenView.y);
-    if(camera.is_activated)
+    if(camera.is_activated) // Update debug camera
         camera.trackballUpdate(x, y, viewport_size.width, viewport_size.height);
-    else
+    else if (!camera_out.is_activated && !camera.is_activated)
         char_boy->trackballFlag(x, y, viewport_size.width, viewport_size.height);
 }
 void My_Keyboard(unsigned char key, int x, int y)
@@ -541,7 +552,7 @@ void My_Keyboard(unsigned char key, int x, int y)
         camera.key_update(key);
         printf("cam:%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
     }
-    if (!camera.is_activated)
+    if (!camera.is_activated && !camera_out.is_activated)
         char_boy->key_update(key);
 }
 void My_SpecialKeys(int key, int x, int y){
@@ -609,13 +620,20 @@ void My_Menu(int id){
             break;
         case MENU_CAM_DEBUG:
             camera.is_activated = true;
+            camera_out.is_activated = false;
+            break;
+        case MENU_CAM_OUT:
+            camera.is_activated = false;
+            camera_out.is_activated = true;
             break;
         case MENU_CAM_THIRD:
             camera.is_activated = false;
+            camera_out.is_activated = false;
             char_boy->selectThird();
             break;
         case MENU_CAM_FIRST:
             camera.is_activated = false;
+            camera_out.is_activated = false;
             char_boy->selectFirst();
             break;
         default:
@@ -691,6 +709,7 @@ int main(int argc, char *argv[]){
     
     glutSetMenu(menu_cam);
     glutAddMenuEntry("Debug camera", MENU_CAM_DEBUG);
+    glutAddMenuEntry("Skybox camera", MENU_CAM_OUT);
     glutAddMenuEntry("Third camera", MENU_CAM_THIRD);
     glutAddMenuEntry("First camera", MENU_CAM_FIRST);
     
