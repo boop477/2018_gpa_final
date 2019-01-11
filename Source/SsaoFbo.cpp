@@ -41,6 +41,9 @@ void SsaoFbo::beforeDraw(){
     /* This function should be called before drawing ssao_vao.*/
     static const GLfloat white[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+    
     glDrawBuffer(GL_BACK);
     glClearBufferfv(GL_COLOR, 0, white);
     glDisable(GL_DEPTH_TEST);

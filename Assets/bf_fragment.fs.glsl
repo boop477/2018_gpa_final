@@ -91,7 +91,10 @@ void main()
         RdKd = max(dot(fs_in.N, normalize(fs_in.L)), 0.0)*Kd;
         RsKs = pow(max(dot(fs_in.N, normalize(fs_in.H)), 0.0), specular_power) * Ks;
     }
-    RaKa = vec3(texColor*1.0*ambient);
+    if (is_ssao == 1)
+        RaKa = vec3(texColor*1.0*ambient);
+    else
+        RaKa = vec3(texColor*1.0);
     final_color = vec4(RdKd+RsKs+RaKa, 1.0);
     
     // == Environment Mapping == //

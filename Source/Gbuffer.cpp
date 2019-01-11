@@ -51,9 +51,12 @@ void Gbuffer::beforeDraw(){
     static const GLfloat ones[] = { 1.0f };
     
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+    
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
-    glClearBufferfv(GL_COLOR, 0, black);
-    glClearBufferfv(GL_DEPTH, 0, ones);
+    glClearBufferfv(GL_COLOR, 0, black); // Color(normal)
+    glClearBufferfv(GL_DEPTH, 0, ones);  // Depth
     
     glEnable(GL_DEPTH_TEST);
 }
