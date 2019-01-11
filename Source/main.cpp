@@ -169,6 +169,7 @@ void My_Init(){
     tex_envmap = cube_map->loadTexture();    // We've hardcoded the texture location in this function.
     
     mesh = new Model("Space/Space Station Scene.obj",
+    //mesh = new Model("lost_empire/lost_empire.obj",
                      glm::vec3(0.0, 0.0, 0.0),
                      glm::quat(glm::vec3(radians(0.0), radians(90.0), radians(0.0))),
                      glm::vec3(0.15, 0.15, 0.15));
@@ -536,7 +537,11 @@ void My_Keyboard(unsigned char key, int x, int y)
         zombie->log();
     }
     
-    camera.key_update(key);
+    
+    if (camera.is_activated){
+        camera.key_update(key);
+        printf("cam:%f %f %f\n", camera.eye_pos.x, camera.eye_pos.y, camera.eye_pos.z);
+    }
     if (!camera.is_activated)
         char_boy->key_update(key);
 }

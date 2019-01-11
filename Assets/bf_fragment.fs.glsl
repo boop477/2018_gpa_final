@@ -75,7 +75,7 @@ void main()
     
     vec3 Kd = texColor;
     vec3 Ks = vec3(3.0);
-    float nmap_coef = 0.2;
+    float nmap_coef = 0.5;
     
     // == BF Shading == //
     vec3 RdKd;
@@ -106,5 +106,5 @@ void main()
     }
     
     fragColor = final_color;
-    //fragColor = vec4(1.0);
+    //fragColor = vec4(texture(texture_normal1, fs_in.tex_cord).rgb, 1.0);
 }

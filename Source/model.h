@@ -287,10 +287,10 @@ private:
 			if (!skip)
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
-                if (typeName == "texture_normal"){
-                    texture.id = tex_normal_map;
-                }
-				else
+                //if (typeName == "texture_normal"){
+                //    texture.id = tex_normal_map;
+                //}
+				//else
                     texture.id = TextureFromFile(str.C_Str(), this->directory);
 				texture.type = typeName;
 				texture.path = str.C_Str();
