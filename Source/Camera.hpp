@@ -16,8 +16,10 @@ class Camera{
 public:
 	Camera();
 	~Camera();
+    void initialize(glm::vec3 eye_pos, glm::vec3 eye_front);
 	void reshape(int, int);
 	void trackballUpdate(int, int, int, int);
+    void fix(bool fix){is_fixed = fix;}
 
 	glm::mat4 getView();
 	glm::mat4 getProjection();
@@ -37,6 +39,7 @@ public:
 	glm::vec3 eye_up = glm::vec3(0.0f, 1.0f, 0.0f);
     
     bool is_activated = false;
+    bool is_fixed = false;
 
 	float yaw = 90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
 	float pitch = 0.0f;
